@@ -1,0 +1,38 @@
+# Rust
+target/
+Cargo.lock
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# Credentials & secrets
+.env
+.env.*
+credentials.json
+*.key
+*.pem
+keystore.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+
+# Database (local dev only)
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log

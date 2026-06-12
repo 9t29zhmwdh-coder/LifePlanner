@@ -1,0 +1,14 @@
+[package]
+name    = "lp-cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "lifeplanner"
+path = "src/main.rs"
+
+[dependencies]
+lp-core   = { path = "../lp-core" }
+tokio     = { workspace = true }
+clap      = { version = "4", features = ["derive"] }
+chrono    = { workspace = true }
