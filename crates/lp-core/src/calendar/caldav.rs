@@ -1,5 +1,5 @@
 use crate::models::*;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use reqwest::Client;
 use thiserror::Error;
 
@@ -83,7 +83,6 @@ fn parse_caldav_response(xml: &str, calendar_id: &str) -> Vec<Event> {
 fn parse_ics_string(data: &str, calendar_id: &str) -> Result<Vec<Event>, ()> {
     use ical::IcalParser;
     use std::io::BufReader;
-    use chrono::{NaiveDateTime, TimeZone};
 
     let reader = BufReader::new(data.as_bytes());
     let parser = IcalParser::new(reader);
