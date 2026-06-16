@@ -1,4 +1,3 @@
-use crate::models::CalendarAccount;
 use keyring::Entry;
 use thiserror::Error;
 
