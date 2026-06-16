@@ -9,7 +9,7 @@ pub use priorities::*;
 pub use time_slots::*;
 
 use crate::models::*;
-use chrono::{DateTime, Utc};
+use chrono::{TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
