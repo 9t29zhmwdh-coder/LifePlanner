@@ -1,6 +1,6 @@
 use crate::models::{EnergyLevel, Task, TaskStatus};
 
-pub fn sort_by_priority(tasks: &mut Vec<Task>) {
+pub fn sort_by_priority(tasks: &mut [Task]) {
     tasks.sort_by(|a, b| {
         b.urgency_score().partial_cmp(&a.urgency_score()).unwrap()
     });
