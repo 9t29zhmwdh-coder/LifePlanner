@@ -9,6 +9,7 @@
 
 LifePlanner automatically recognizes appointments, tasks, projects and deadlines from emails, PDFs and notes, links them intelligently and helps you plan your day — without a single byte leaving your device.
 
+[![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml)
 ![Rust](https://img.shields.io/badge/Rust-1.77+-orange?logo=rust)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
