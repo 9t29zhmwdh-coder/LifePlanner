@@ -1,5 +1,4 @@
 use crate::analyzer::DailySummary;
-use crate::models::{EnergyLevel, Task};
 
 pub fn daily_summary_prompt(summary: &DailySummary) -> String {
     let events_text = summary.events.iter()
