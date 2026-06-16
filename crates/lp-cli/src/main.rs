@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use lp_core::{db::Database, extractor::extract_from_text};
+use lp_core::extractor::extract_from_text;
 use std::path::PathBuf;
 
 #[derive(Parser)]
