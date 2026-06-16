@@ -2,8 +2,7 @@ pub mod date_parser;
 pub mod text;
 pub mod email;
 
-use crate::models::{Event, Task, TaskPriority, EnergyLevel, EventSource, TaskSource};
-use chrono::{DateTime, Utc};
+use crate::models::{Event, Task};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
