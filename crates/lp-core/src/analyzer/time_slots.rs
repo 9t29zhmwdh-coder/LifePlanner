@@ -1,5 +1,5 @@
 use crate::models::{AppSettings, Event};
-use chrono::{DateTime, Datelike, TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
