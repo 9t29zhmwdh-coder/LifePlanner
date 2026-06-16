@@ -133,5 +133,5 @@ fn weekday_offset(name: &str, now: &DateTime<Utc>) -> Option<NaiveDate> {
     let today_n = today.num_days_from_monday();
     let target_n = target.num_days_from_monday();
     let diff = if target_n > today_n { target_n - today_n } else { 7 - today_n + target_n };
-    Some((now.date_naive() + Duration::days(diff as i64)))
+    Some(now.date_naive() + Duration::days(diff as i64))
 }
