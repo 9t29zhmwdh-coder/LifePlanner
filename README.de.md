@@ -5,9 +5,9 @@
 
 [🇬🇧 English Version](README.md)
 
-**Vollständig offline KI-Lebensplaner — Rust-Core, Tauri-UI, lokale KI via Ollama.**
+**Vollständig offline KI-Lebensplaner, entwickelt mit Rust, Tauri und lokaler KI via Ollama.**
 
-LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Mails, PDFs und Notizen, verknüpft sie intelligent und hilft dir beim Planen des Tages — ohne dass ein einziges Byte dein Gerät verlässt.
+LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Mails, PDFs und Notizen, verknüpft sie intelligent und hilft dir beim Planen des Tages; ohne dass ein einziges Byte dein Gerät verlässt.
 
 ![Rust](https://img.shields.io/badge/Rust-1.77+-orange?logo=rust)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
@@ -18,15 +18,15 @@ LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Ma
 
 ## Funktionen
 
-- **Intelligente Erkennung** — Text einfügen (E-Mail, Chat, Dokument) und LifePlanner erkennt Daten, Fristen und Aufgaben automatisch
-- **Kalender-Sync** — ICS-Dateien, CalDAV, Exchange, Google- und Apple-Kalender
-- **Konflikterkennung** — Überschneidungen werden sofort angezeigt
-- **Freie-Zeitfenster-Finder** — Zeigt, wo im Tag noch Luft ist
-- **Energie-Sortierung** — Aufgaben nach Fokus- / Kreativ- / Routine-Energie gruppiert
-- **Projekt-Tracker** — Aufgaben in Projekte mit Fortschrittsanzeige bündeln
-- **Tages-KI-Zusammenfassung** — Lokale KI erstellt einen verständlichen Tagesüberblick
-- **Volltextsuche** — SQLite-FTS5-gestützte Sofortsuche über alle Termine und Aufgaben
-- **100 % Offline** — Kein Cloud-Zwang, kein Account, kein Tracking
+- **Intelligente Erkennung**: Text einfügen (E-Mail, Chat, Dokument) und LifePlanner erkennt Daten, Fristen und Aufgaben automatisch
+- **Kalender-Sync**: ICS-Dateien, CalDAV, Exchange, Google- und Apple-Kalender
+- **Konflikterkennung**: Überschneidungen werden sofort angezeigt
+- **Freie-Zeitfenster-Finder**: Zeigt, wo im Tag noch Luft ist
+- **Energie-Sortierung**: Aufgaben nach Fokus- / Kreativ- / Routine-Energie gruppiert
+- **Projekt-Tracker**: Aufgaben in Projekte mit Fortschrittsanzeige bündeln
+- **Tages-KI-Zusammenfassung**: Lokale KI erstellt einen verständlichen Tagesüberblick
+- **Volltextsuche**: SQLite-FTS5-gestützte Sofortsuche über alle Termine und Aufgaben
+- **100 % Offline**: Kein Cloud-Zwang, kein Account, kein Tracking
 
 ---
 
@@ -75,7 +75,7 @@ LifePlanner wurde für vollständige Datensouveränität entwickelt:
 
 - Alle Daten werden lokal in SQLite gespeichert (`~/.local/share/LifePlanner/`)
 - Kalender-Zugangsdaten im OS-Schlüsselbund (macOS Keychain, Windows DPAPI, Linux SecretService)
-- KI-Verarbeitung läuft vollständig lokal via Ollama — keine Daten verlassen das Gerät
+- KI-Verarbeitung läuft vollständig lokal via Ollama. Keine Daten verlassen das Gerät.
 - Keine Analyse, kein Absturzbericht, keine externen Verbindungen
 
 ---
