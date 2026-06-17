@@ -5,9 +5,9 @@
 
 [🇩🇪 Deutsche Version](README.de.md)
 
-**Fully offline AI life planner — Rust core, Tauri UI, local AI via Ollama.**
+**Fully offline AI life planner built with Rust, Tauri and local AI via Ollama.**
 
-LifePlanner automatically recognizes appointments, tasks, projects and deadlines from emails, PDFs and notes, links them intelligently and helps you plan your day — without a single byte leaving your device.
+LifePlanner automatically recognizes appointments, tasks, projects and deadlines from emails, PDFs and notes, links them intelligently and helps you plan your day; without a single byte leaving your device.
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml)
 ![Rust](https://img.shields.io/badge/Rust-1.77+-orange?logo=rust)
@@ -19,15 +19,15 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 
 ## Features
 
-- **Smart Extraction** — Paste any text (email, chat, document) and LifePlanner detects dates, deadlines and tasks automatically
-- **Calendar Sync** — ICS files, CalDAV, Exchange, Google and Apple Calendar
-- **Conflict Detection** — Overlapping appointments are flagged instantly
-- **Free Slot Finder** — See where your day has breathing room
-- **Energy Sorting** — Tasks grouped by focus / creative / routine energy level
-- **Project Tracker** — Group tasks into projects with progress visualization
-- **Daily AI Summary** — Local AI generates a plain-language briefing for your day
-- **Full-text Search** — SQLite FTS5-powered instant search across all events and tasks
-- **100% Offline** — No cloud, no account, no telemetry
+- **Smart Extraction**: Paste any text (email, chat, document) and LifePlanner detects dates, deadlines and tasks automatically
+- **Calendar Sync**: ICS files, CalDAV, Exchange, Google and Apple Calendar
+- **Conflict Detection**: Overlapping appointments are flagged instantly
+- **Free Slot Finder**: See where your day has breathing room
+- **Energy Sorting**: Tasks grouped by focus / creative / routine energy level
+- **Project Tracker**: Group tasks into projects with progress visualization
+- **Daily AI Summary**: Local AI generates a plain-language briefing for your day
+- **Full-text Search**: SQLite FTS5-powered instant search across all events and tasks
+- **100% Offline**: No cloud, no account, no telemetry
 
 ---
 
@@ -76,7 +76,7 @@ LifePlanner is designed for complete data sovereignty:
 
 - All data stored locally in SQLite (`~/.local/share/LifePlanner/`)
 - Calendar credentials stored in the OS keychain (macOS Keychain, Windows DPAPI, Linux SecretService)
-- AI processing runs entirely on-device via Ollama — no data is sent to any server
+- AI processing runs entirely on-device via Ollama. No data is sent to any server.
 - No analytics, no crash reporting, no external connections
 
 ---
