@@ -1,16 +1,16 @@
-# Privacy Policy — LifePlanner
+# Privacy Policy : LifePlanner
 
 LifePlanner runs **fully offline** on your local machine.
 
 ## What data is processed
 
-- Text, email content, PDF documents, and notes — parsed locally to extract events, tasks, and deadlines
-- Calendar data — read/written via CalDAV to your local network calendar server
+- Text, email content, PDF documents, and notes : parsed locally to extract events, tasks, and deadlines
+- Calendar data : read/written via CalDAV to your local network calendar server
 
 ## What data leaves your machine
 
 **Nothing external.** All AI inference runs via [Ollama](https://ollama.ai) locally.
-CalDAV sync targets only your local network — no cloud calendar services are contacted by default.
+CalDAV sync targets only your local network : no cloud calendar services are contacted by default.
 
 ## Storage
 
