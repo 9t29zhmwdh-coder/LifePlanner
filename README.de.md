@@ -5,7 +5,7 @@
 
 [🇬🇧 English Version](README.md)
 
-**Vollständig offline KI-Lebensplaner, entwickelt mit Rust, Tauri und lokaler KI via Ollama.**
+**Bewusst offline: KI-Lebensplaner, entwickelt mit Rust, Tauri und lokaler KI via Ollama.**
 
 LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Mails, PDFs und Notizen, verknüpft sie intelligent und hilft dir beim Planen des Tages; ohne dass ein einziges Byte dein Gerät verlässt.
 

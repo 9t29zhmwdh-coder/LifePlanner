@@ -5,7 +5,7 @@
 
 [🇩🇪 Deutsche Version](README.de.md)
 
-**Fully offline AI life planner built with Rust, Tauri and local AI via Ollama.**
+**Offline by design: AI life planner built with Rust, Tauri and local AI via Ollama.**
 
 LifePlanner automatically recognizes appointments, tasks, projects and deadlines from emails, PDFs and notes, links them intelligently and helps you plan your day; without a single byte leaving your device.
 
