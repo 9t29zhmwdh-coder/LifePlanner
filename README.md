@@ -11,7 +11,13 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions) ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
 
+> **How it runs:** LifePlanner is a native desktop app (Tauri), not a server and not a browser tab. It opens its own window like any installed program and runs fully offline.
+
+![LifePlanner](docs/screenshot.png)
+
 ---
+
+**In practice:** you get a native desktop app that turns messy emails, PDFs and notes into a structured, conflict-checked daily schedule. Extraction, calendar sync and conflict detection work without any AI at all; the local AI briefing (via Ollama) is an optional add-on for a plain-language summary, not a requirement to use the app.
 
 ## Features
 
@@ -66,12 +72,20 @@ Then set the Ollama URL in **Settings → Local AI**.
 
 ---
 
+## Uninstall / Cleanup
+
+Remove the app the usual way for your OS (drag to Trash on macOS, "Apps & Features" on Windows).
+
+Local data is not removed automatically: see [Privacy](#privacy) below for exact paths and the OS keychain entry.
+
+---
+
 ## Privacy
 
 LifePlanner is designed for complete data sovereignty:
 
-- All data stored locally in SQLite (`~/.local/share/LifePlanner/`)
-- Calendar credentials stored in the OS keychain (macOS Keychain, Windows DPAPI, Linux SecretService)
+- All data stored locally in SQLite: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows)
+- Calendar credentials stored in the OS keychain (macOS Keychain, Windows DPAPI), removable manually via Keychain Access / Credential Manager if desired
 - AI processing runs entirely on-device via Ollama. No data is sent to any server.
 - No analytics, no crash reporting, no external connections
 
