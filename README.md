@@ -22,7 +22,7 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 ## Features
 
 - **Smart Extraction**: Paste any text (email, chat, document) and LifePlanner detects dates, deadlines and tasks automatically
-- **Calendar Sync**: ICS files, CalDAV, Exchange, Google and Apple Calendar
+- **Calendar Sync**: ICS files and CalDAV
 - **Conflict Detection**: Overlapping appointments are flagged instantly
 - **Free Slot Finder**: See where your day has breathing room
 - **Energy Sorting**: Tasks grouped by focus / creative / routine energy level
