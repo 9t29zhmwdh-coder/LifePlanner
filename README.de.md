@@ -11,7 +11,13 @@ LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Ma
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions) ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
 
+> **So läuft das:** LifePlanner ist eine native Desktop-App (Tauri), kein Server und kein Browser-Tab. Sie öffnet ihr eigenes Fenster wie jedes installierte Programm und läuft vollständig offline.
+
+![LifePlanner](docs/screenshot.png)
+
 ---
+
+**In der Praxis:** Du bekommst eine native Desktop-App, die unübersichtliche E-Mails, PDFs und Notizen in einen strukturierten, konfliktgeprüften Tagesplan verwandelt. Erkennung, Kalender-Sync und Konflikterkennung funktionieren komplett ohne KI; die lokale KI-Zusammenfassung (via Ollama) ist eine optionale Ergänzung für eine Zusammenfassung in Klartext, keine Voraussetzung für die Nutzung der App.
 
 ## Funktionen
 
@@ -66,12 +72,20 @@ Dann unter **Einstellungen → Lokale KI** die Ollama-URL eintragen.
 
 ---
 
+## Deinstallation / Datenbereinigung
+
+Entferne die App wie auf deinem Betriebssystem üblich (auf macOS in den Papierkorb ziehen, unter Windows "Apps & Features").
+
+Lokale Daten werden dabei nicht automatisch entfernt: siehe [Datenschutz](#datenschutz) unten für die genauen Pfade und den Schlüsselbund-Eintrag.
+
+---
+
 ## Datenschutz
 
 LifePlanner wurde für vollständige Datensouveränität entwickelt:
 
-- Alle Daten werden lokal in SQLite gespeichert (`~/.local/share/LifePlanner/`)
-- Kalender-Zugangsdaten im OS-Schlüsselbund (macOS Keychain, Windows DPAPI, Linux SecretService)
+- Alle Daten werden lokal in SQLite gespeichert: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows)
+- Kalender-Zugangsdaten im OS-Schlüsselbund (macOS Keychain, Windows DPAPI), bei Bedarf manuell über Keychain Access / Credential Manager entfernbar
 - KI-Verarbeitung läuft vollständig lokal via Ollama. Keine Daten verlassen das Gerät.
 - Keine Analyse, kein Absturzbericht, keine externen Verbindungen
 
