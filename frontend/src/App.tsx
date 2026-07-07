@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { usePlannerStore } from './stores/plannerStore'
 import { useSettingsStore } from './stores/settingsStore'
 import { api } from './lib/tauri'
+import { useT, useLangStore } from './lib/i18n'
 import { TodayView }    from './components/Today/TodayView'
 import { CalendarView } from './components/Calendar/CalendarView'
 import { TasksView }    from './components/Tasks/TasksView'
@@ -16,6 +17,9 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('today')
   const { loadAll, setOllamaOnline, summary } = usePlannerStore()
   const { load: loadSettings } = useSettingsStore()
+  const t = useT()
+  const lang = useLangStore((s) => s.lang)
+  const toggleLang = useLangStore((s) => s.toggle)
 
   useEffect(() => {
     loadSettings()
@@ -51,18 +55,22 @@ export default function App() {
           </div>
         </div>
         <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-          {nav('today',    '🌅', 'Heute',       (overdueCount + conflictCount) || undefined)}
-          {nav('calendar', '📆', 'Kalender')}
-          {nav('tasks',    '✅', 'Aufgaben')}
-          {nav('projects', '📁', 'Projekte')}
-          {nav('capture',  '✏️', 'Erfassen')}
-          {nav('search',   '🔍', 'Suche')}
-          {nav('settings', '⚙️', 'Einstellungen')}
+          {nav('today',    '🌅', t('navToday'),    (overdueCount + conflictCount) || undefined)}
+          {nav('calendar', '📆', t('navCalendar'))}
+          {nav('tasks',    '✅', t('navTasks'))}
+          {nav('projects', '📁', t('navProjects'))}
+          {nav('capture',  '✏️', t('navCapture'))}
+          {nav('search',   '🔍', t('navSearch'))}
+          {nav('settings', '⚙️', t('navSettings'))}
         </nav>
-        <div className="p-3 border-t border-[#30363d]">
+        <div className="p-3 border-t border-[#30363d] flex gap-2">
+          <button onClick={toggleLang}
+            className="text-xs text-[#8b949e] hover:text-[#e6edf3] px-2 py-1.5 rounded hover:bg-[#21262d] transition-colors">
+            {lang === 'en' ? 'DE' : 'EN'}
+          </button>
           <button onClick={loadAll}
-            className="w-full text-xs text-[#8b949e] hover:text-[#e6edf3] py-1.5 rounded hover:bg-[#21262d] transition-colors">
-            ↻ Aktualisieren
+            className="flex-1 text-xs text-[#8b949e] hover:text-[#e6edf3] py-1.5 rounded hover:bg-[#21262d] transition-colors">
+            ↻ {t('refresh')}
           </button>
         </div>
       </div>

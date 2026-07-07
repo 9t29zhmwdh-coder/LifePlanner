@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+import { getLang, t } from './i18n'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -67,7 +68,7 @@ export interface DailySummary {
 }
 
 export interface ExtractionResult { events: CalEvent[]; tasks: Task[]; source_text: string }
-export interface SearchResults { event_ids: string[]; task_ids: string[] }
+export interface SearchResults { events: CalEvent[]; tasks: Task[] }
 
 // ─── API ────────────────────────────────────────────────────────────────────
 
@@ -124,33 +125,38 @@ export const api = {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-export const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  critical: 'Kritisch', high: 'Hoch', medium: 'Mittel', low: 'Niedrig', someday: 'Irgendwann',
+export function priorityLabel(p: TaskPriority): string {
+  return { critical: t('priorityCritical'), high: t('priorityHigh'), medium: t('priorityMedium'),
+    low: t('priorityLow'), someday: t('prioritySomeday') }[p]
 }
 export const PRIORITY_COLORS: Record<TaskPriority, string> = {
   critical: '#f85149', high: '#f0883e', medium: '#d29922', low: '#58a6ff', someday: '#8b949e',
 }
-export const ENERGY_LABELS: Record<EnergyLevel, string> = {
-  high: 'Fokus', medium: 'Kreativ', low: 'Routine',
+export function energyLabel(e: EnergyLevel): string {
+  return { high: t('energyHigh'), medium: t('energyMedium'), low: t('energyLow') }[e]
 }
 export const ENERGY_COLORS: Record<EnergyLevel, string> = {
   high: '#f85149', medium: '#79c0ff', low: '#3fb950',
 }
-export const STATUS_LABELS: Record<TaskStatus, string> = {
-  todo: 'Offen', in_progress: 'In Arbeit', done: 'Erledigt', cancelled: 'Abgebrochen',
+export function statusLabel(s: TaskStatus): string {
+  return { todo: t('statusTodo'), in_progress: t('statusInProgress'), done: t('statusDone'),
+    cancelled: t('statusCancelled') }[s]
 }
 
+function locale(): string {
+  return getLang() === 'de' ? 'de-CH' : 'en-US'
+}
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('de-CH', { weekday: 'short', day: '2-digit', month: '2-digit' })
+  return new Date(iso).toLocaleDateString(locale(), { weekday: 'short', day: '2-digit', month: '2-digit' })
 }
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })
+  return new Date(iso).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })
 }
 export function formatDateTime(iso: string): string {
   return `${formatDate(iso)}, ${formatTime(iso)}`
 }
 export function dayOfWeekLabel(n: number): string {
-  return ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][n] ?? '?'
+  return [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')][n] ?? '?'
 }
 
 export function newUuid(): string {

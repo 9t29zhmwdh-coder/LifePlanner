@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api, newUuid, type CalEvent, type Task } from '../../lib/tauri'
 import { usePlannerStore } from '../../stores/plannerStore'
+import { useT } from '../../lib/i18n'
 
 type Tab = 'today' | 'calendar' | 'tasks' | 'projects' | 'capture' | 'search' | 'settings'
 interface Props { onNavigate: (t: Tab) => void }
@@ -12,6 +13,7 @@ interface ExtractionResult {
 
 export function CaptureView({ onNavigate }: Props) {
   const { loadAll, ollamaOnline } = usePlannerStore()
+  const t = useT()
   const [text, setText] = useState('')
   const [extracting, setExtracting] = useState(false)
   const [aiExtracting, setAiExtracting] = useState(false)
@@ -39,7 +41,7 @@ export function CaptureView({ onNavigate }: Props) {
     setResult(null)
     setSaved(false)
     try {
-      const r = await api.aiExtractFromText(text)
+      const r = await api.aiExtract(text)
       setResult(r)
     } catch {
       setResult({ events: [], tasks: [] })
@@ -63,9 +65,9 @@ export function CaptureView({ onNavigate }: Props) {
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="p-4 border-b border-[#30363d]">
-        <div className="text-sm font-medium text-[#e6edf3] mb-1">Text erfassen</div>
+        <div className="text-sm font-medium text-[#e6edf3] mb-1">{t('captureTitle')}</div>
         <div className="text-xs text-[#8b949e]">
-          Fügen Sie E-Mails, Notizen oder Texte ein — Termine und Aufgaben werden automatisch erkannt.
+          {t('captureSubtitle')}
         </div>
       </div>
 
@@ -75,22 +77,22 @@ export function CaptureView({ onNavigate }: Props) {
           <textarea
             value={text}
             onChange={e => setText(e.target.value)}
-            placeholder="Text hier einfügen…&#10;&#10;Beispiel:&#10;Meeting morgen um 14:00 Uhr mit dem Team.&#10;Bericht bis Freitag einreichen.&#10;Nächsten Montag: Präsentation vorbereiten."
+            placeholder={t('textPlaceholder')}
             className="w-full h-40 bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-2.5 text-sm text-[#e6edf3] resize-none focus:outline-none focus:border-[#58a6ff] placeholder-[#484f58] font-mono"
           />
           <div className="flex gap-2 items-center">
             <button onClick={handleExtract} disabled={extracting || !text.trim()}
               className="px-4 py-2 text-xs bg-[#21262d] border border-[#30363d] hover:border-[#58a6ff] text-[#e6edf3] rounded-md transition-colors disabled:opacity-50">
-              {extracting ? '⟳ Erkenne…' : '🔍 Erkennen'}
+              {extracting ? `⟳ ${t('detecting')}` : t('detect')}
             </button>
             <button onClick={handleAiExtract} disabled={aiExtracting || !text.trim() || !ollamaOnline}
               className="px-4 py-2 text-xs bg-[#238636] hover:bg-[#2ea043] text-white rounded-md transition-colors disabled:opacity-50"
-              title={!ollamaOnline ? 'Ollama nicht verfügbar' : ''}>
-              {aiExtracting ? '⟳ KI analysiert…' : '✨ KI-Erkennung'}
+              title={!ollamaOnline ? t('ollamaNotAvailable') : ''}>
+              {aiExtracting ? `⟳ ${t('aiAnalyzing')}` : t('aiDetection')}
             </button>
             {text && (
               <button onClick={handleClear} className="ml-auto text-xs text-[#8b949e] hover:text-[#e6edf3]">
-                Leeren
+                {t('clear')}
               </button>
             )}
           </div>
@@ -101,21 +103,21 @@ export function CaptureView({ onNavigate }: Props) {
           <div className="flex-1 overflow-y-auto space-y-4">
             {result.events.length === 0 && result.tasks.length === 0 ? (
               <div className="text-center text-[#8b949e] text-sm py-8">
-                Keine Termine oder Aufgaben erkannt.
+                {t('noItemsDetected')}
               </div>
             ) : (
               <>
                 {result.events.length > 0 && (
                   <div>
                     <div className="text-xs font-medium text-[#8b949e] mb-2 uppercase tracking-wide">
-                      Erkannte Termine ({result.events.length})
+                      {t('detectedEvents', { n: result.events.length })}
                     </div>
                     {result.events.map(ev => (
                       <div key={ev.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2">
                         <div className="text-sm text-[#79c0ff] font-medium">{ev.title}</div>
                         <div className="text-xs text-[#8b949e] mt-1">
-                          {new Date(ev.start).toLocaleString('de-CH')}
-                          {ev.end && ` – ${new Date(ev.end).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}`}
+                          {new Date(ev.start).toLocaleString()}
+                          {ev.end && ` → ${new Date(ev.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
                         </div>
                         {ev.location && <div className="text-xs text-[#8b949e]">📍 {ev.location}</div>}
                         {ev.description && <div className="text-xs text-[#8b949e] mt-1 italic">{ev.description}</div>}
@@ -127,18 +129,18 @@ export function CaptureView({ onNavigate }: Props) {
                 {result.tasks.length > 0 && (
                   <div>
                     <div className="text-xs font-medium text-[#8b949e] mb-2 uppercase tracking-wide">
-                      Erkannte Aufgaben ({result.tasks.length})
+                      {t('detectedTasks', { n: result.tasks.length })}
                     </div>
-                    {result.tasks.map(t => (
-                      <div key={t.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2">
-                        <div className="text-sm text-[#e6edf3]">{t.title}</div>
+                    {result.tasks.map(task => (
+                      <div key={task.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2">
+                        <div className="text-sm text-[#e6edf3]">{task.title}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          {t.due_date && (
+                          {task.due_date && (
                             <span className="text-[9px] text-[#d29922]">
-                              Fällig: {new Date(t.due_date).toLocaleDateString('de-CH')}
+                              {t('due')}: {new Date(task.due_date).toLocaleDateString()}
                             </span>
                           )}
-                          <span className="text-[9px] text-[#8b949e]">{t.priority}</span>
+                          <span className="text-[9px] text-[#8b949e]">{task.priority}</span>
                         </div>
                       </div>
                     ))}
@@ -149,13 +151,13 @@ export function CaptureView({ onNavigate }: Props) {
                   {!saved ? (
                     <button onClick={handleSave}
                       className="px-4 py-2 text-xs bg-[#238636] hover:bg-[#2ea043] text-white rounded-md transition-colors">
-                      Alle speichern & übernehmen
+                      {t('saveAll')}
                     </button>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#3fb950]">✓ Gespeichert</span>
+                      <span className="text-xs text-[#3fb950]">{t('saved')}</span>
                       <button onClick={() => onNavigate('today')} className="text-xs text-[#58a6ff] hover:underline">
-                        Zum Heute-Tab →
+                        {t('goToToday')}
                       </button>
                     </div>
                   )}

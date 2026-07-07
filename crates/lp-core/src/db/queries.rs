@@ -297,11 +297,42 @@ pub async fn search_all(db: &Database, query: &str) -> super::DbResult<SearchRes
     .filter_map(|r| r.try_get::<String, _>("id").ok())
     .collect();
 
-    Ok(SearchResults { event_ids, task_ids })
+    let events = fetch_events_by_ids(db, &event_ids).await?;
+    let tasks = fetch_tasks_by_ids(db, &task_ids).await?;
+
+    Ok(SearchResults { events, tasks })
+}
+
+async fn fetch_events_by_ids(db: &Database, ids: &[String]) -> super::DbResult<Vec<Event>> {
+    if ids.is_empty() {
+        return Ok(vec![]);
+    }
+    let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(",");
+    let sql = format!("SELECT * FROM events WHERE id IN ({placeholders})");
+    let mut q = sqlx::query(&sql);
+    for id in ids {
+        q = q.bind(id);
+    }
+    let rows = q.fetch_all(&db.pool).await?;
+    Ok(rows.iter().filter_map(row_to_event).collect())
+}
+
+async fn fetch_tasks_by_ids(db: &Database, ids: &[String]) -> super::DbResult<Vec<Task>> {
+    if ids.is_empty() {
+        return Ok(vec![]);
+    }
+    let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(",");
+    let sql = format!("SELECT * FROM tasks WHERE id IN ({placeholders})");
+    let mut q = sqlx::query(&sql);
+    for id in ids {
+        q = q.bind(id);
+    }
+    let rows = q.fetch_all(&db.pool).await?;
+    Ok(rows.iter().filter_map(row_to_task).collect())
 }
 
 #[derive(Debug, serde::Serialize)]
 pub struct SearchResults {
-    pub event_ids: Vec<String>,
-    pub task_ids: Vec<String>,
+    pub events: Vec<Event>,
+    pub tasks: Vec<Task>,
 }
