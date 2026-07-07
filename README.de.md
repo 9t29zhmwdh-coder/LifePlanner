@@ -13,7 +13,7 @@ LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Ma
 
 > **So läuft das:** LifePlanner ist eine native Desktop-App (Tauri), kein Server und kein Browser-Tab. Sie öffnet ihr eigenes Fenster wie jedes installierte Programm und läuft vollständig offline.
 
-![LifePlanner](docs/screenshot.png)
+![LifePlanner](docs/screenshot.de.png)
 
 ---
 
@@ -22,7 +22,7 @@ LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Ma
 ## Funktionen
 
 - **Intelligente Erkennung**: Text einfügen (E-Mail, Chat, Dokument) und LifePlanner erkennt Daten, Fristen und Aufgaben automatisch
-- **Kalender-Sync**: ICS-Dateien, CalDAV, Exchange, Google- und Apple-Kalender
+- **Kalender-Sync**: ICS-Dateien und CalDAV
 - **Konflikterkennung**: Überschneidungen werden sofort angezeigt
 - **Freie-Zeitfenster-Finder**: Zeigt, wo im Tag noch Luft ist
 - **Energie-Sortierung**: Aufgaben nach Fokus- / Kreativ- / Routine-Energie gruppiert
