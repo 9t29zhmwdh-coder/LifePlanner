@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
-import { api, formatDate, formatTime, PRIORITY_LABELS, ENERGY_LABELS, type CalEvent, type Task } from '../../lib/tauri'
+import { api, formatDate, formatTime, priorityLabel, energyLabel, type CalEvent, type Task, type TaskPriority, type EnergyLevel } from '../../lib/tauri'
+import { useT } from '../../lib/i18n'
 
 interface SearchResults {
   events: CalEvent[]
@@ -7,6 +8,7 @@ interface SearchResults {
 }
 
 export function SearchView() {
+  const t = useT()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResults | null>(null)
   const [searching, setSearching] = useState(false)
@@ -42,7 +44,7 @@ export function SearchView() {
             autoFocus
             value={query}
             onChange={e => handleChange(e.target.value)}
-            placeholder="Termine, Aufgaben und Projekte durchsuchen…"
+            placeholder={t('searchPlaceholder')}
             className="w-full bg-[#21262d] border border-[#30363d] rounded-lg pl-9 pr-4 py-2.5 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]"
           />
           {searching && (
@@ -56,8 +58,8 @@ export function SearchView() {
           <div className="flex items-center justify-center h-48">
             <div className="text-center">
               <div className="text-4xl mb-3">🔍</div>
-              <div className="text-[#8b949e] text-sm">Suchbegriff eingeben…</div>
-              <div className="text-[#484f58] text-xs mt-1">Volltextsuche über alle Termine und Aufgaben</div>
+              <div className="text-[#8b949e] text-sm">{t('enterSearchTerm')}</div>
+              <div className="text-[#484f58] text-xs mt-1">{t('fullTextSearchHint')}</div>
             </div>
           </div>
         )}
@@ -66,26 +68,26 @@ export function SearchView() {
           <div className="flex items-center justify-center h-48">
             <div className="text-center">
               <div className="text-3xl mb-2">📭</div>
-              <div className="text-[#8b949e] text-sm">Keine Ergebnisse für „{query}"</div>
+              <div className="text-[#8b949e] text-sm">{t('noResultsFor', { q: query })}</div>
             </div>
           </div>
         )}
 
         {results && total > 0 && (
           <div className="p-4 space-y-4">
-            <div className="text-xs text-[#8b949e]">{total} Ergebnis{total !== 1 ? 'se' : ''}</div>
+            <div className="text-xs text-[#8b949e]">{total !== 1 ? t('resultOther', { n: total }) : t('resultOne', { n: total })}</div>
 
             {results.events.length > 0 && (
               <section>
                 <div className="text-xs font-medium text-[#8b949e] mb-2 uppercase tracking-wide">
-                  Termine ({results.events.length})
+                  {t('events', { n: results.events.length })}
                 </div>
                 {results.events.map(ev => (
                   <div key={ev.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2 hover:border-[#58a6ff] transition-colors">
                     <div className="text-sm text-[#79c0ff] font-medium">{highlight(ev.title, query)}</div>
                     <div className="text-xs text-[#8b949e] mt-1">
                       {formatDate(ev.start)} · {formatTime(ev.start)}
-                      {ev.end && ` – ${formatTime(ev.end)}`}
+                      {ev.end && ` → ${formatTime(ev.end)}`}
                     </div>
                     {ev.location && (
                       <div className="text-xs text-[#8b949e]">📍 {ev.location}</div>
@@ -101,23 +103,23 @@ export function SearchView() {
             {results.tasks.length > 0 && (
               <section>
                 <div className="text-xs font-medium text-[#8b949e] mb-2 uppercase tracking-wide">
-                  Aufgaben ({results.tasks.length})
+                  {t('tasks', { n: results.tasks.length })}
                 </div>
-                {results.tasks.map(t => (
-                  <div key={t.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2 hover:border-[#58a6ff] transition-colors">
-                    <div className="text-sm text-[#e6edf3] font-medium">{highlight(t.title, query)}</div>
+                {results.tasks.map(task => (
+                  <div key={task.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2 hover:border-[#58a6ff] transition-colors">
+                    <div className="text-sm text-[#e6edf3] font-medium">{highlight(task.title, query)}</div>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-[9px] text-[#8b949e]">{PRIORITY_LABELS[t.priority as keyof typeof PRIORITY_LABELS]}</span>
-                      <span className="text-[9px] text-[#8b949e]">{ENERGY_LABELS[t.energy_level as keyof typeof ENERGY_LABELS]}</span>
-                      {t.due_date && (
-                        <span className={`text-[9px] ${new Date(t.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
-                          Fällig: {formatDate(t.due_date)}
+                      <span className="text-[9px] text-[#8b949e]">{priorityLabel(task.priority as TaskPriority)}</span>
+                      <span className="text-[9px] text-[#8b949e]">{energyLabel(task.energy_level as EnergyLevel)}</span>
+                      {task.due_date && (
+                        <span className={`text-[9px] ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
+                          {t('due')}: {formatDate(task.due_date)}
                         </span>
                       )}
-                      <span className="text-[9px] text-[#8b949e]">{t.status}</span>
+                      <span className="text-[9px] text-[#8b949e]">{task.status}</span>
                     </div>
-                    {t.description && (
-                      <div className="text-xs text-[#8b949e] mt-1 truncate">{t.description}</div>
+                    {task.description && (
+                      <div className="text-xs text-[#8b949e] mt-1 truncate">{task.description}</div>
                     )}
                   </div>
                 ))}

@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { useSettingsStore } from '../../stores/settingsStore'
 import { api, newUuid, type CalendarAccount, type CalendarKind } from '../../lib/tauri'
-
-const CALENDAR_KINDS: { value: CalendarKind; label: string }[] = [
-  { value: 'ics_file', label: 'ICS-Datei' },
-  { value: 'caldav', label: 'CalDAV' },
-  { value: 'exchange', label: 'Exchange' },
-  { value: 'google', label: 'Google Kalender' },
-  { value: 'apple', label: 'Apple Kalender' },
-]
+import { useT } from '../../lib/i18n'
 
 export function SettingsView() {
+  const t = useT()
+  const CALENDAR_KINDS: { value: CalendarKind; label: string }[] = [
+    { value: 'ics_file', label: t('calIcsFile') },
+    { value: 'cal_dav', label: t('calCaldav') },
+  ]
   const { settings, save } = useSettingsStore()
   const [draft, setDraft] = useState(settings)
   const [testing, setTesting] = useState(false)
@@ -55,63 +53,63 @@ export function SettingsView() {
 
   return (
     <div className="h-full overflow-y-auto p-6 max-w-2xl">
-      <h1 className="text-lg font-semibold text-[#e6edf3] mb-6">Einstellungen</h1>
+      <h1 className="text-lg font-semibold text-[#e6edf3] mb-6">{t('settingsTitle')}</h1>
 
-      {/* KI / Ollama */}
-      <Section title="Lokale KI (Ollama)">
-        <Field label="Ollama URL">
+      {/* AI / Ollama */}
+      <Section title={t('localAiSection')}>
+        <Field label={t('ollamaUrl')}>
           <input value={draft.ollama_url} onChange={e => setDraft(d => ({ ...d, ollama_url: e.target.value }))}
             className={input} />
         </Field>
-        <Field label="Modell">
+        <Field label={t('model')}>
           <input value={draft.text_model} onChange={e => setDraft(d => ({ ...d, text_model: e.target.value }))}
             placeholder="llama3" className={input} />
         </Field>
         <div className="flex items-center gap-3 mt-2">
           <button onClick={handleTestOllama} disabled={testing}
             className="px-3 py-1.5 text-xs bg-[#21262d] border border-[#30363d] hover:border-[#58a6ff] text-[#e6edf3] rounded transition-colors disabled:opacity-50">
-            {testing ? 'Teste…' : 'Verbindung testen'}
+            {testing ? t('testing') : t('testConnection')}
           </button>
-          {testResult === 'ok' && <span className="text-xs text-[#3fb950]">✓ Verbunden</span>}
-          {testResult === 'fail' && <span className="text-xs text-[#f85149]">✗ Nicht erreichbar</span>}
+          {testResult === 'ok' && <span className="text-xs text-[#3fb950]">{t('connected')}</span>}
+          {testResult === 'fail' && <span className="text-xs text-[#f85149]">{t('notReachable')}</span>}
         </div>
       </Section>
 
-      {/* Arbeitszeiten */}
-      <Section title="Arbeitszeiten">
+      {/* Working hours */}
+      <Section title={t('workingHoursSection')}>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Arbeitsbeginn (Stunde)">
+          <Field label={t('workStart')}>
             <input type="number" min={0} max={23} value={draft.work_start_hour}
               onChange={e => setDraft(d => ({ ...d, work_start_hour: +e.target.value }))}
               className={input} />
           </Field>
-          <Field label="Arbeitsende (Stunde)">
+          <Field label={t('workEnd')}>
             <input type="number" min={0} max={23} value={draft.work_end_hour}
               onChange={e => setDraft(d => ({ ...d, work_end_hour: +e.target.value }))}
               className={input} />
           </Field>
         </div>
-        <Field label="Mindestlänge freies Zeitfenster (Min)">
+        <Field label={t('minFreeSlot')}>
           <input type="number" min={5} max={240} value={draft.min_free_slot_minutes}
             onChange={e => setDraft(d => ({ ...d, min_free_slot_minutes: +e.target.value }))}
             className={input} />
         </Field>
-        <Field label="Standard-Terminlänge (Min)">
+        <Field label={t('defaultEventDuration')}>
           <input type="number" min={5} max={480} value={draft.default_event_duration_minutes}
             onChange={e => setDraft(d => ({ ...d, default_event_duration_minutes: +e.target.value }))}
             className={input} />
         </Field>
       </Section>
 
-      {/* Verhalten */}
-      <Section title="Verhalten">
-        <Toggle label="Automatisch aus Zwischenablage extrahieren"
+      {/* Behavior */}
+      <Section title={t('behaviorSection')}>
+        <Toggle label={t('autoExtract')}
           value={draft.auto_extract_on_paste}
           onChange={v => setDraft(d => ({ ...d, auto_extract_on_paste: v }))} />
-        <Toggle label="Benachrichtigungen aktivieren"
+        <Toggle label={t('enableNotifications')}
           value={draft.enable_notifications}
           onChange={v => setDraft(d => ({ ...d, enable_notifications: v }))} />
-        <Field label="Sprache / Locale">
+        <Field label={t('languageLocale')}>
           <select value={draft.locale} onChange={e => setDraft(d => ({ ...d, locale: e.target.value }))}
             className={input}>
             <option value="de-CH">Deutsch (Schweiz)</option>
@@ -122,8 +120,8 @@ export function SettingsView() {
         </Field>
       </Section>
 
-      {/* Kalenderkonten */}
-      <Section title="Kalenderkonten">
+      {/* Calendar accounts */}
+      <Section title={t('calendarAccountsSection')}>
         {draft.calendar_accounts.length > 0 && (
           <div className="space-y-2 mb-3">
             {draft.calendar_accounts.map(acc => (
@@ -143,45 +141,45 @@ export function SettingsView() {
         {!addingCal ? (
           <button onClick={() => setAddingCal(true)}
             className="w-full px-3 py-2 text-xs border border-dashed border-[#30363d] hover:border-[#58a6ff] text-[#8b949e] hover:text-[#58a6ff] rounded-lg transition-colors">
-            + Kalender hinzufügen
+            {t('addCalendar')}
           </button>
         ) : (
           <div className="border border-[#30363d] rounded-lg p-3 space-y-2">
-            <Field label="Name">
+            <Field label={t('name')}>
               <input value={newCal.name ?? ''} onChange={e => setNewCal(c => ({ ...c, name: e.target.value }))}
-                placeholder="Mein Kalender" className={input} />
+                placeholder={t('calendarNamePlaceholder')} className={input} />
             </Field>
-            <Field label="Typ">
+            <Field label={t('type')}>
               <select value={newCal.kind} onChange={e => setNewCal(c => ({ ...c, kind: e.target.value as CalendarKind }))}
                 className={input}>
                 {CALENDAR_KINDS.map(k => <option key={k.value} value={k.value}>{k.label}</option>)}
               </select>
             </Field>
             {newCal.kind === 'ics_file' ? (
-              <Field label="Dateipfad">
+              <Field label={t('filePath')}>
                 <input value={newCal.ics_path ?? ''} onChange={e => setNewCal(c => ({ ...c, ics_path: e.target.value }))}
-                  placeholder="/Users/me/kalender.ics" className={input} />
+                  placeholder="/Users/me/calendar.ics" className={input} />
               </Field>
             ) : (
               <>
-                <Field label="URL">
+                <Field label={t('url')}>
                   <input value={newCal.url ?? ''} onChange={e => setNewCal(c => ({ ...c, url: e.target.value }))}
                     placeholder="https://dav.example.com/calendars/me/" className={input} />
                 </Field>
-                <Field label="Benutzername">
+                <Field label={t('username')}>
                   <input value={newCal.username ?? ''} onChange={e => setNewCal(c => ({ ...c, username: e.target.value }))}
                     className={input} />
                 </Field>
               </>
             )}
-            <Field label="Farbe">
+            <Field label={t('color')}>
               <input type="color" value={newCal.color ?? '#58a6ff'}
                 onChange={e => setNewCal(c => ({ ...c, color: e.target.value }))}
                 className="w-10 h-8 rounded bg-transparent cursor-pointer" />
             </Field>
             <div className="flex gap-2 pt-1">
-              <button onClick={handleAddCalendar} className="px-3 py-1 text-xs bg-[#238636] text-white rounded">Hinzufügen</button>
-              <button onClick={() => setAddingCal(false)} className="px-3 py-1 text-xs text-[#8b949e]">Abbrechen</button>
+              <button onClick={handleAddCalendar} className="px-3 py-1 text-xs bg-[#238636] text-white rounded">{t('add')}</button>
+              <button onClick={() => setAddingCal(false)} className="px-3 py-1 text-xs text-[#8b949e]">{t('cancel')}</button>
             </div>
           </div>
         )}
@@ -191,7 +189,7 @@ export function SettingsView() {
       <div className="mt-6">
         <button onClick={handleSave} disabled={saving}
           className="px-6 py-2.5 text-sm bg-[#238636] hover:bg-[#2ea043] text-white rounded-lg transition-colors disabled:opacity-50">
-          {saving ? 'Speichern…' : 'Einstellungen speichern'}
+          {saving ? t('saving') : t('saveSettings')}
         </button>
       </div>
     </div>

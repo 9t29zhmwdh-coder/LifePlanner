@@ -2,14 +2,17 @@ import { useState } from 'react'
 import { usePlannerStore } from '../../stores/plannerStore'
 import { api, formatTime, type CalEvent } from '../../lib/tauri'
 import { addDays, startOfWeek, format, isSameDay } from 'date-fns'
-import { de } from 'date-fns/locale'
+import { de, enUS } from 'date-fns/locale'
+import { useT, getLang } from '../../lib/i18n'
 
-const HOURS = Array.from({ length: 14 }, (_, i) => i + 7) // 07:00–20:00
+const HOURS = Array.from({ length: 14 }, (_, i) => i + 7) // 07:00 to 20:00
 
 export function CalendarView() {
   const { events, conflicts, loadWeek } = usePlannerStore()
   const [weekOffset, setWeekOffset] = useState(0)
   const [selected, setSelected] = useState<CalEvent | null>(null)
+  const t = useT()
+  const dateLocale = getLang() === 'de' ? de : enUS
 
   const weekStart = startOfWeek(addDays(new Date(), weekOffset * 7), { weekStartsOn: 1 })
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
@@ -28,11 +31,11 @@ export function CalendarView() {
       <div className="p-4 border-b border-[#30363d] flex items-center gap-4">
         <button onClick={handlePrev} className="p-1 text-[#8b949e] hover:text-[#e6edf3]">◀</button>
         <span className="text-sm font-medium text-[#e6edf3]">
-          {format(weekStart, 'd. MMMM', { locale: de })} – {format(addDays(weekStart, 6), 'd. MMMM yyyy', { locale: de })}
+          {format(weekStart, 'd. MMMM', { locale: dateLocale })} → {format(addDays(weekStart, 6), 'd. MMMM yyyy', { locale: dateLocale })}
         </span>
         <button onClick={handleNext} className="p-1 text-[#8b949e] hover:text-[#e6edf3]">▶</button>
         <button onClick={() => { setWeekOffset(0); loadWeek(0) }}
-          className="ml-2 text-xs text-[#58a6ff] hover:underline">Heute</button>
+          className="ml-2 text-xs text-[#58a6ff] hover:underline">{t('today')}</button>
       </div>
 
       <div className="flex-1 overflow-auto">
@@ -41,7 +44,7 @@ export function CalendarView() {
           <div />
           {days.map(day => (
             <div key={day.toISOString()} className="p-2 text-center border-l border-[#21262d]">
-              <div className="text-xs text-[#8b949e]">{format(day, 'EEE', { locale: de })}</div>
+              <div className="text-xs text-[#8b949e]">{format(day, 'EEE', { locale: dateLocale })}</div>
               <div className={`text-sm font-medium ${isSameDay(day, new Date()) ? 'text-[#58a6ff]' : 'text-[#e6edf3]'}`}>
                 {format(day, 'd')}
               </div>
@@ -92,7 +95,7 @@ export function CalendarView() {
               <div className="font-medium text-[#e6edf3]">{selected.title}</div>
               <div className="text-xs text-[#8b949e] mt-1">
                 {format(new Date(selected.start), 'dd.MM.yyyy HH:mm')}
-                {selected.end && ` – ${formatTime(selected.end)}`}
+                {selected.end && ` → ${formatTime(selected.end)}`}
               </div>
               {selected.location && <div className="text-xs text-[#8b949e]">📍 {selected.location}</div>}
               {selected.description && <div className="text-xs text-[#8b949e] mt-1">{selected.description}</div>}
