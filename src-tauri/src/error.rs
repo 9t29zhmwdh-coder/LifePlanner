@@ -9,8 +9,6 @@ pub enum LpError {
     Calendar(String),
     #[error("AI error: {0}")]
     Ai(String),
-    #[error("IO error: {0}")]
-    Io(String),
     #[error("{0}")]
     Other(String),
 }

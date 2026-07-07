@@ -1,7 +1,7 @@
 use crate::{error::LpResult, state::AppState};
 use lp_core::{
     db::queries::*,
-    models::{Event, EventStatus},
+    models::Event,
 };
 use chrono::{DateTime, Utc};
 use tauri::State;

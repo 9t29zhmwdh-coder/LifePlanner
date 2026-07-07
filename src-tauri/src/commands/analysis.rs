@@ -10,7 +10,7 @@ use tauri::State;
 pub async fn get_daily_summary(state: State<'_, AppState>) -> LpResult<DailySummary> {
     let now = Utc::now();
     let from = now.date_naive().and_hms_opt(0, 0, 0)
-        .and_then(|n| chrono::Utc.from_local_datetime(&n).single())
+        .map(|n| n.and_utc())
         .unwrap_or(now);
     let to = from + Duration::days(1);
     let events = get_events_in_range(&state.db, from, to).await?;
@@ -35,7 +35,7 @@ pub async fn get_conflicts(
 pub async fn get_free_slots(state: State<'_, AppState>) -> LpResult<Vec<TimeSlot>> {
     let now = Utc::now();
     let from = now.date_naive().and_hms_opt(0, 0, 0)
-        .and_then(|n| chrono::Utc.from_local_datetime(&n).single())
+        .map(|n| n.and_utc())
         .unwrap_or(now);
     let to = from + Duration::days(1);
     let events = get_events_in_range(&state.db, from, to).await?;
