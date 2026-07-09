@@ -44,6 +44,8 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 
 **Ollama model (recommended):** `llama3` or any instruction-tuned model
 
+> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
+
 ---
 
 ## Quick Start
