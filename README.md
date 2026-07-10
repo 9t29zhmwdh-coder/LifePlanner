@@ -17,6 +17,10 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 
 ---
 
+> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
+
+---
+
 **In practice:** you get a native desktop app that turns messy emails, PDFs and notes into a structured, conflict-checked daily schedule. Extraction, calendar sync and conflict detection work without any AI at all; the local AI briefing (via Ollama) is an optional add-on for a plain-language summary, not a requirement to use the app.
 
 ## Features
@@ -43,8 +47,6 @@ LifePlanner automatically recognizes appointments, tasks, projects and deadlines
 | [Ollama](https://ollama.com) | latest (optional, for AI features) |
 
 **Ollama model (recommended):** `llama3` or any instruction-tuned model
-
-> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
 
 ---
 

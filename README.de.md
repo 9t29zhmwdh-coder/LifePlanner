@@ -17,6 +17,10 @@ LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Ma
 
 ---
 
+> 🌱 Neu hier? → [Schritt-für-Schritt-Anleitung für Einsteiger](GETTING_STARTED.md)
+
+---
+
 **In der Praxis:** Du bekommst eine native Desktop-App, die unübersichtliche E-Mails, PDFs und Notizen in einen strukturierten, konfliktgeprüften Tagesplan verwandelt. Erkennung, Kalender-Sync und Konflikterkennung funktionieren komplett ohne KI; die lokale KI-Zusammenfassung (via Ollama) ist eine optionale Ergänzung für eine Zusammenfassung in Klartext, keine Voraussetzung für die Nutzung der App.
 
 ## Funktionen
