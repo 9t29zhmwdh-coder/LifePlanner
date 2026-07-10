@@ -43,3 +43,23 @@ jobs:
           releaseBody: 'See CHANGELOG.md for details. Not code-signed/notarized: macOS Gatekeeper and Windows SmartScreen will show warnings on first run.'
           releaseDraft: false
           prerelease: false
+
+      - name: Upload stable-named DMG (for README download link)
+        if: matrix.platform == 'macos-latest'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dmg=$(find src-tauri/target/release/bundle/dmg -name "*.dmg" | head -1)
+          cp "$dmg" LifePlanner.dmg
+          gh release upload "${{ github.ref_name }}" LifePlanner.dmg --clobber --repo ${{ github.repository }}
+
+      - name: Upload stable-named installer (for README download link)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $exe = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
+          Copy-Item $exe.FullName "LifePlanner-Setup.exe"
+          gh release upload "${{ github.ref_name }}" "LifePlanner-Setup.exe" --clobber --repo ${{ github.repository }}
