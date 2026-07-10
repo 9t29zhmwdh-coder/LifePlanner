@@ -1,0 +1,45 @@
+name: Release
+
+# Baut die Tauri-App bei jedem Tag-Push fuer macOS und Windows (siehe
+# Platform-Badge im README) und haengt die Bundles (DMG / MSI-NSIS) an ein
+# GitHub Release. Kein Linux: weder README noch CI erwaehnen Linux-Support.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2.9.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'LifePlanner ${{ github.ref_name }}'
+          releaseBody: 'See CHANGELOG.md for details. Not code-signed/notarized: macOS Gatekeeper and Windows SmartScreen will show warnings on first run.'
+          releaseDraft: false
+          prerelease: false
