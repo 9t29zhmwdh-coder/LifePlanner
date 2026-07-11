@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.2] (2026-07-11)
+
+### Fixed
+
+- Fixed the release workflow's stable-named DMG/installer upload: it looked for the built bundle under `src-tauri/target/...`, but this is a Cargo workspace, so Cargo places build output under the workspace root `target/...`. The stable `LifePlanner.dmg`/`LifePlanner-Setup.exe` download links in README.md never actually got uploaded before this fix.
+
 ## [0.2.1] (2026-07-10)
 
 ### Fixed
