@@ -50,7 +50,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          dmg=$(find src-tauri/target/release/bundle/dmg -name "*.dmg" | head -1)
+          dmg=$(find target/release/bundle/dmg -name "*.dmg" | head -1)
           cp "$dmg" LifePlanner.dmg
           gh release upload "${{ github.ref_name }}" LifePlanner.dmg --clobber --repo ${{ github.repository }}
 
@@ -60,6 +60,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $exe = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
+          $exe = Get-ChildItem -Path "target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
           Copy-Item $exe.FullName "LifePlanner-Setup.exe"
           gh release upload "${{ github.ref_name }}" "LifePlanner-Setup.exe" --clobber --repo ${{ github.repository }}
