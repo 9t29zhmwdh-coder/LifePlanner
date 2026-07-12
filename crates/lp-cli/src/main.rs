@@ -3,7 +3,7 @@ use lp_core::extractor::extract_from_text;
 use std::path::PathBuf;
 
 #[derive(Parser)]
-#[command(name = "lifeplanner", about = "LifePlanner CLI — offline personal planner")]
+#[command(name = "lifeplanner", about = "LifePlanner CLI: offline personal planner")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -28,7 +28,7 @@ async fn main() {
             let result = extract_from_text(&text);
             println!("Events: {}", result.events.len());
             for ev in &result.events {
-                println!("  📅 {} — {}", ev.start.format("%Y-%m-%d %H:%M"), ev.title);
+                println!("  📅 {}: {}", ev.start.format("%Y-%m-%d %H:%M"), ev.title);
             }
             println!("Tasks: {}", result.tasks.len());
             for task in &result.tasks {
@@ -43,7 +43,7 @@ async fn main() {
                 .expect("Failed to parse ICS file");
             println!("Parsed {} events from {}", events.len(), path.display());
             for ev in &events {
-                println!("  📅 {} — {}", ev.start.format("%Y-%m-%d"), ev.title);
+                println!("  📅 {}: {}", ev.start.format("%Y-%m-%d"), ev.title);
             }
         }
     }

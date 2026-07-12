@@ -67,7 +67,7 @@ JSON-Format:
 
 - energy_level high = Fokus/Tiefarbeit, medium = kreativ/Meeting, low = Routine/Admin"#,
         task_title,
-        if description.is_empty() { "—" } else { description }
+        if description.is_empty() { "N/A" } else { description }
     )
 }
 

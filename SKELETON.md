@@ -1,4 +1,4 @@
-# Skeleton — LifePlanner
+# Skeleton: LifePlanner
 
 This file documents the repository structure and CI expectations for contributors.
 
@@ -27,13 +27,13 @@ LifePlanner/
 
 ## CI Expectations
 
-- `cargo check --workspace` — must pass
-- `cargo test --workspace` — must pass
-- `cargo clippy --workspace -- -D warnings` — must pass
-- `cargo fmt --all` — must be applied before PR
+- `cargo check --workspace`: must pass
+- `cargo test --workspace`: must pass
+- `cargo clippy --workspace -- -D warnings`: must pass
+- `cargo fmt --all`: must be applied before PR
 
 ## Branch Strategy
 
-- `main` — stable, tagged releases
-- `dev` — integration branch
+- `main`: stable, tagged releases
+- `dev`: integration branch
 - Feature branches: `feat/<name>`

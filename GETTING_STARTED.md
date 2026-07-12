@@ -1,6 +1,6 @@
 # Getting Started with LifePlanner
 
-This guide walks you through setting up and running LifePlanner from scratch, even if you have never used a terminal or built a Rust/Tauri app before. LifePlanner officially targets **macOS and Windows** (see the Platform badge in the README) — Linux is not covered here.
+This guide walks you through setting up and running LifePlanner from scratch, even if you have never used a terminal or built a Rust/Tauri app before. LifePlanner officially targets **macOS and Windows** (see the Platform badge in the README); Linux is not covered here.
 
 ---
 
