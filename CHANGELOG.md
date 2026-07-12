@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.7] (2026-07-12)
+
+### Security
+
+- Bumped `vite` and `@vitejs/plugin-react` (frontend dev dependencies) to resolve 4 Dependabot-reported advisories: a high-severity `server.fs.deny` bypass on Windows, an NTLMv2 hash disclosure via UNC path handling in `launch-editor`, a path traversal in Vite's optimized-deps `.map` handling, and an esbuild dev-server request/response exposure. All four affect the Vite dev server only, not the built/shipped application.
+
 ## [0.2.6] (2026-07-12)
 
 ### Added
