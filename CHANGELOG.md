@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.6] (2026-07-12)
+
+### Added
+
+- TERMS_OF_SALE.md: terms covering the purchase of a pre-built, packaged distribution through a marketplace (as-is, no warranty, liability strictly capped at the amount paid). Does not modify the existing MIT LICENSE, which continues to cover the source code at no cost.
+
+### Fixed
+
+- Version drift: `src-tauri/Cargo.toml` was at 0.2.4 while the rest of the workspace was at 0.2.5. All crates now report 0.2.6 consistently.
+
 ## [0.2.5] (2026-07-12)
 
 ### Fixed
