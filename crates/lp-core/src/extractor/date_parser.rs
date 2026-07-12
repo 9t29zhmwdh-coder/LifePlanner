@@ -93,7 +93,7 @@ pub fn extract_dates(text: &str) -> Vec<ExtractedDate> {
         results.push(ExtractedDate { datetime: dt, is_deadline: false, raw: cap[0].to_string() });
     }
 
-    // Deadline phrases — mark as deadline
+    // Deadline phrases: mark as deadline
     for cap in RE_DEADLINE.captures_iter(text) {
         let sub = extract_dates(&cap[1]);
         for mut d in sub {

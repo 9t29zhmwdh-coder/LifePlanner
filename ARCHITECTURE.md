@@ -1,4 +1,4 @@
-# Architecture — LifePlanner
+# Architecture: LifePlanner
 
 ## Overview
 
@@ -45,8 +45,8 @@ LifePlanner/
 
 ## Key Dependencies
 
-- `ical` — iCalendar parsing/generation
-- `quick-xml` — CalDAV XML (WebDAV)
-- `reqwest + rustls` — CalDAV HTTP client (TLS, no OpenSSL)
-- `rusqlite` — SQLite FTS5 storage
-- `ollama-rs` or raw HTTP — local AI backend
+- `ical`: iCalendar parsing/generation
+- `quick-xml`: CalDAV XML (WebDAV)
+- `reqwest + rustls`: CalDAV HTTP client (TLS, no OpenSSL)
+- `rusqlite`: SQLite FTS5 storage
+- `ollama-rs` or raw HTTP: local AI backend

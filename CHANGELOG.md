@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.5] (2026-07-12)
+
+### Fixed
+
+- Removed an eszett and em-dashes across the repo (TEMPLATE_NOTES.md, GETTING_STARTED.md, CONTRIBUTING.md, ARCHITECTURE.md, SKELETON.md, and three Rust source files). Swiss German orthography.
+
 ## [0.2.4] (2026-07-11)
 
 ### Added
