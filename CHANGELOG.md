@@ -5,6 +5,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.0] - 2026-07-17
+
+First stable release: a real, packaged, installable distribution now exists
+for macOS, Windows, and Linux (DMG, EXE installer, AppImage), the
+prerequisite for a 1.0 release per this portfolio's own SemVer discipline.
+
+### Added
+- Linux (Ubuntu/AppImage) is now a fully supported build target, alongside macOS and Windows.
+
 ## [0.2.9] - 2026-07-17
 
 ### Changed
