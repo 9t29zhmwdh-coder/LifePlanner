@@ -10,6 +10,7 @@
 LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Mails, PDFs und Notizen, verknüpft sie intelligent und hilft dir beim Planen des Tages; ohne dass ein einziges Byte dein Gerät verlässt.
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions) ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows_%7C_Ubuntu-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/LifePlanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/LifePlanner)
 
 > **So läuft das:** LifePlanner ist eine native Desktop-App (Tauri), kein Server und kein Browser-Tab. Sie öffnet ihr eigenes Fenster wie jedes installierte Programm und läuft vollständig offline.
 
