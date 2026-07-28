@@ -5,6 +5,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.2] - 2026-07-28
+
+### Added
+
+- `.github/dependabot.yml`, with grouped weekly updates. The file was missing, and without it there are no version updates at all: repository security alerts only fire for disclosed vulnerabilities. Follows `engineering-standards` v0.10.0.
+
+### Fixed
+
+- 6 action references used a mutable tag or branch instead of a commit SHA, `dtolnay/rust-toolchain@stable` among them where applicable. A branch HEAD can be moved to point at different code at any time. All are now pinned, at the version that was actually running rather than upgraded, so any major bump arrives as its own reviewable Dependabot PR.
+- The crates carried version 0.2.7 and `frontend/package.json` 0.2.7, while `tauri.conf.json` and the tag said 1.0.1. A `[workspace.package]` section now holds one version that the crates inherit, and every manifest agrees. `cargo metadata` confirms 1.0.2 across all three crates.
+
 ## [1.0.1] - 2026-07-20
 
 ### Changed
