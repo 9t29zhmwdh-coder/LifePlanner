@@ -5,6 +5,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.8] - 2026-07-30
+
+### Security
+
+- `keyring` now names a platform backend, so calendar credentials actually reach the operating system keychain. It was declared without a platform feature, which compiles and raises no error but falls back to a store held in process memory. Credentials were gone after every restart, and because the fallback answers a read with `NoEntry`, the application read that as "no password stored" rather than as a loss.
+
+### Added
+
+- A test that stores a secret and reads it back from a second process, since a store-then-read inside one process is satisfied by the in-memory fallback and would have passed against the defect. It re-runs its own binary rather than reading through `/usr/bin/security`: the keychain grants read access per application, so a different binary asking for an item it did not create raises an authorisation dialog that blocks CI. The test's own `keyring` entry deliberately names no features, because Cargo unifies features across the graph and a feature there would keep the test green while the application loses its backend.
+
+---
+
 ## [1.0.7] - 2026-07-29
 
 ### Security
