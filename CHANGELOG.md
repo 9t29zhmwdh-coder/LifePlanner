@@ -5,6 +5,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.9] - 2026-07-30
+
+### Changed
+
+- The keychain persistence test runs on every target platform rather than macOS alone. LifePlanner ships `.dmg`, `.msi` and `.deb` artifacts, and each platform has its own credential backend that can be missing independently of the others, so covering one of the three left the other two untested against the defect fixed in 1.0.8.
+- The test separates a missing service from a missing backend. The in-memory fallback never fails to write, so a write error proves a real backend is compiled in and only its service is absent, which is the normal state of a Linux CI runner without a D-Bus secret service. A write that succeeds while a second process finds nothing is the defect.
+
+---
+
 ## [1.0.8] - 2026-07-30
 
 ### Security
