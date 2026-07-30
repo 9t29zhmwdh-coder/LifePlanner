@@ -21,3 +21,9 @@ keyring     = { workspace = true }
 quick-xml   = { workspace = true }
 ical        = "0.10"
 base64      = "0.22"
+
+[dev-dependencies]
+# Bewusst ohne Features: Cargo vereinigt Features ueber den Graphen, ein
+# Feature hier wuerde den Backend auch dann aktivieren, wenn die echte
+# Abhaengigkeit ihn verliert, und der Test pruefte seine eigene Konfiguration.
+keyring = "3"
