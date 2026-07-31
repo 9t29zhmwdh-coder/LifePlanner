@@ -5,9 +5,24 @@
 
 [🇩🇪 Deutsche Version](README.de.md)
 
-**Offline by design: AI life planner built with Rust, Tauri and local AI via Ollama.**
+**Pulls the dates out of your emails and PDFs, so you stop copying them into a calendar by hand.**
 
-LifePlanner automatically recognizes appointments, tasks, projects and deadlines from emails, PDFs and notes, links them intelligently and helps you plan your day; without a single byte leaving your device.
+The appointment is in the confirmation email. The deadline is on page three of
+a PDF. The reminder is a note you wrote yourself. None of it is in the
+calendar, because putting it there is manual work you do at the end of a day
+you already ran out of.
+
+LifePlanner reads those files, extracts what has a date on it, and checks the
+result against your calendar for collisions before you commit to anything.
+
+Extraction, calendar sync and conflict detection need no model at all. The
+optional local Ollama briefing summarises the day in plain words; you can
+ignore it and lose nothing.
+
+Everything stays on the machine. There is no account and no sync service.
+
+**Not for you if** your appointments already arrive as calendar invitations.
+Then your calendar has them, and the extraction has nothing left to do.
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions) [![CodeQL](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/LifePlanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/LifePlanner) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13704/badge)](https://www.bestpractices.dev/projects/13704)
 

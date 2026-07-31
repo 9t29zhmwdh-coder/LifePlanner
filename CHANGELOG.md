@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.12] - 2026-07-31
+
+### Changed
+
+- Both READMEs now open with where the dates actually sit, in a confirmation email or on page three of a PDF, rather than describing the recognition the app performs. It also states earlier that extraction and conflict detection need no model at all, so the AI reads as optional rather than as the point. A short paragraph says the tool has nothing to do when appointments already arrive as calendar invitations.
+
+---
+
 ## [1.0.11] - 2026-07-30
 
 ### Added
