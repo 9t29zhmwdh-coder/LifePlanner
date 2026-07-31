@@ -5,6 +5,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.13] - 2026-07-31
+
+### Added
+
+- `SECURITY.md` records GHSA-wrw7-89jp-8q8g against `glib` 0.18.5, which cannot be fixed from this repository because Tauri 2.11.5 pins `gtk ^0.18` and no patched 0.18.x exists.
+
+### Changed
+
+- The scope section said the project runs fully locally and stopped there. It now names the one connection that exists, your own Ollama instance during the optional AI briefing, and states that extraction, calendar sync and conflict detection reach no network at all. "Fully locally" was true but unspecific, and a reader checking this file wants to know which connection to expect.
+
+### Fixed
+
+- The supported-versions table still listed `0.1.x`, a line that no longer exists.
+
+---
+
 ## [1.0.12] - 2026-07-31
 
 ### Changed
