@@ -5,9 +5,26 @@
 
 [🇬🇧 English Version](README.md)
 
-**Bewusst offline: KI-Lebensplaner, entwickelt mit Rust, Tauri und lokaler KI via Ollama.**
+**Holt die Termine aus deinen Mails und PDFs, damit du sie nicht von Hand in den Kalender tippst.**
 
-LifePlanner erkennt Termine, Aufgaben, Projekte und Fristen automatisch aus E-Mails, PDFs und Notizen, verknüpft sie intelligent und hilft dir beim Planen des Tages; ohne dass ein einziges Byte dein Gerät verlässt.
+Der Termin steht in der Bestätigungsmail. Die Frist auf Seite drei eines PDFs.
+Die Erinnerung ist eine Notiz, die du dir selbst geschrieben hast. Im Kalender
+steht nichts davon, weil das Eintragen Handarbeit ist, die am Ende eines
+Tages ansteht, der ohnehin schon zu kurz war.
+
+LifePlanner liest diese Dateien, zieht heraus, was ein Datum trägt, und prüft
+das Ergebnis gegen deinen Kalender auf Kollisionen, bevor du dich auf etwas
+festlegst.
+
+Extraktion, Kalender-Abgleich und Konflikterkennung brauchen überhaupt kein
+Modell. Das optionale lokale Ollama-Briefing fasst den Tag in normalen Worten
+zusammen; du kannst es ignorieren und verlierst nichts.
+
+Alles bleibt auf dem Gerät. Es gibt weder Account noch Sync-Dienst.
+
+**Nichts für dich, wenn** deine Termine ohnehin als Kalendereinladungen
+ankommen. Dann stehen sie im Kalender, und für die Extraktion bleibt nichts
+übrig.
 
 [![CI](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/actions) [![CodeQL](https://github.com/9t29zhmwdh-coder/LifePlanner/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/9t29zhmwdh-coder/LifePlanner/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/LifePlanner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/LifePlanner) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13704/badge)](https://www.bestpractices.dev/projects/13704)
 
