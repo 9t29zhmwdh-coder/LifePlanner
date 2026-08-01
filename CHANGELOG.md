@@ -5,6 +5,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.15] - 2026-08-01
+
+### Changed
+
+- Dependency updates merged since 1.0.14, all carried by this one version rather than one release each: `thiserror` 1.0.69 to 2.0.19, `dirs` 5.0.1 to 6.0.0, `base64` 0.22.1 to 0.23.0 and `ical` 0.10.0 to 0.11.0. The `dirs` bump was checked rather than assumed, because `data_dir()` decides where the user's database lives: both versions were built and their paths compared, and the source diff between `dirs-sys` 0.4.1 and 0.5.0 turns out to be a single Windows FFI line, `HANDLE::default()` replaced by `null_mut()`. No path logic changed on any platform.
+
+### Removed
+
+- five declared dependencies that no code references: quick-xml, anyhow, tracing, rayon, base64. They were compiled on every build, shipped their own transitive tree, counted toward the supply-chain surface, and produced Dependabot pull requests proposing upgrades to code nobody calls. Verified by removing them and running `cargo check`, `cargo clippy` with `-D warnings` and the full test suite, all clean.
+
+---
+
 ## [1.0.14] - 2026-08-01
 
 ### Changed
