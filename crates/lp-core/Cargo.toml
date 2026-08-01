@@ -20,7 +20,7 @@ rayon       = { workspace = true }
 keyring     = { workspace = true }
 quick-xml   = { workspace = true }
 ical        = "0.10"
-base64      = "0.22"
+base64      = "0.23"
 
 [dev-dependencies]
 # Bewusst ohne Features: Cargo vereinigt Features ueber den Graphen, ein
