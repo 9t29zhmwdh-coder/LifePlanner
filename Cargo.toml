@@ -3,7 +3,7 @@ members = ["crates/lp-core", "crates/lp-cli", "src-tauri"]
 resolver = "2"
 
 [workspace.package]
-version = "1.0.15"
+version = "1.0.16"
 edition = "2021"
 
 [workspace.dependencies]
@@ -25,5 +25,5 @@ rayon       = "1"
 # faellt auf einen Speicher im Prozessspeicher zurueck, den kein zweiter
 # Prozess sieht. get_password meldet dann NoEntry, was diese Anwendung als
 # "kein Passwort hinterlegt" liest, statt als verlorene Zugangsdaten.
-keyring     = { version = "3", features = ["apple-native", "windows-native", "async-secret-service", "crypto-openssl", "tokio"] }
+keyring     = { version = "3", features = ["apple-native", "windows-native", "async-secret-service", "crypto-rust", "tokio"] }
 dirs        = "6"
