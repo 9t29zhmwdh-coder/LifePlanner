@@ -3,7 +3,7 @@ members = ["crates/lp-core", "crates/lp-cli", "src-tauri"]
 resolver = "2"
 
 [workspace.package]
-version = "1.0.16"
+version = "1.0.17"
 edition = "2021"
 
 [workspace.dependencies]
