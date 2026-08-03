@@ -47,7 +47,7 @@ export default function App() {
   return (
     <div className="flex h-screen bg-[#0d1117] text-[#e6edf3] overflow-hidden">
       {/* Sidebar */}
-      <div className="w-52 flex-shrink-0 border-r border-[#30363d] flex flex-col">
+      <div className="w-52 shrink-0 border-r border-[#30363d] flex flex-col">
         <div className="p-4 border-b border-[#30363d]">
           <div className="flex items-center gap-2">
             <span className="text-xl">📅</span>
@@ -65,11 +65,11 @@ export default function App() {
         </nav>
         <div className="p-3 border-t border-[#30363d] flex gap-2">
           <button onClick={toggleLang}
-            className="text-xs text-[#8b949e] hover:text-[#e6edf3] px-2 py-1.5 rounded hover:bg-[#21262d] transition-colors">
+            className="text-xs text-[#8b949e] hover:text-[#e6edf3] px-2 py-1.5 rounded-sm hover:bg-[#21262d] transition-colors">
             {lang === 'en' ? 'DE' : 'EN'}
           </button>
           <button onClick={loadAll}
-            className="flex-1 text-xs text-[#8b949e] hover:text-[#e6edf3] py-1.5 rounded hover:bg-[#21262d] transition-colors">
+            className="flex-1 text-xs text-[#8b949e] hover:text-[#e6edf3] py-1.5 rounded-sm hover:bg-[#21262d] transition-colors">
             ↻ {t('refresh')}
           </button>
         </div>

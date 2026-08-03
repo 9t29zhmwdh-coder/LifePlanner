@@ -67,7 +67,7 @@ export function SettingsView() {
         </Field>
         <div className="flex items-center gap-3 mt-2">
           <button onClick={handleTestOllama} disabled={testing}
-            className="px-3 py-1.5 text-xs bg-[#21262d] border border-[#30363d] hover:border-[#58a6ff] text-[#e6edf3] rounded transition-colors disabled:opacity-50">
+            className="px-3 py-1.5 text-xs bg-[#21262d] border border-[#30363d] hover:border-[#58a6ff] text-[#e6edf3] rounded-sm transition-colors disabled:opacity-50">
             {testing ? t('testing') : t('testConnection')}
           </button>
           {testResult === 'ok' && <span className="text-xs text-[#3fb950]">{t('connected')}</span>}
@@ -126,7 +126,7 @@ export function SettingsView() {
           <div className="space-y-2 mb-3">
             {draft.calendar_accounts.map(acc => (
               <div key={acc.id} className="flex items-center gap-3 p-2 bg-[#21262d] rounded-lg">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: acc.color ?? '#58a6ff' }} />
+                <div className="w-3 h-3 rounded-full shrink-0" style={{ background: acc.color ?? '#58a6ff' }} />
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-medium text-[#e6edf3] truncate">{acc.name}</div>
                   <div className="text-[9px] text-[#8b949e]">{CALENDAR_KINDS.find(k => k.value === acc.kind)?.label}</div>
@@ -175,10 +175,10 @@ export function SettingsView() {
             <Field label={t('color')}>
               <input type="color" value={newCal.color ?? '#58a6ff'}
                 onChange={e => setNewCal(c => ({ ...c, color: e.target.value }))}
-                className="w-10 h-8 rounded bg-transparent cursor-pointer" />
+                className="w-10 h-8 rounded-sm bg-transparent cursor-pointer" />
             </Field>
             <div className="flex gap-2 pt-1">
-              <button onClick={handleAddCalendar} className="px-3 py-1 text-xs bg-[#238636] text-white rounded">{t('add')}</button>
+              <button onClick={handleAddCalendar} className="px-3 py-1 text-xs bg-[#238636] text-white rounded-sm">{t('add')}</button>
               <button onClick={() => setAddingCal(false)} className="px-3 py-1 text-xs text-[#8b949e]">{t('cancel')}</button>
             </div>
           </div>
@@ -196,7 +196,7 @@ export function SettingsView() {
   )
 }
 
-const input = 'w-full bg-[#21262d] border border-[#30363d] rounded px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]'
+const input = 'w-full bg-[#21262d] border border-[#30363d] rounded-sm px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (

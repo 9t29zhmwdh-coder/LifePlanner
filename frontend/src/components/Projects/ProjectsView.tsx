@@ -54,12 +54,12 @@ export function ProjectsView() {
           <input autoFocus value={newName} onChange={e => setNewName(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') setAdding(false) }}
             placeholder={t('projectNamePlaceholder')}
-            className="w-full bg-[#21262d] border border-[#30363d] rounded px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+            className="w-full bg-[#21262d] border border-[#30363d] rounded-sm px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
           <input value={newDesc} onChange={e => setNewDesc(e.target.value)}
             placeholder={t('descriptionOptionalPlaceholder')}
-            className="w-full bg-[#21262d] border border-[#30363d] rounded px-3 py-1.5 text-xs text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+            className="w-full bg-[#21262d] border border-[#30363d] rounded-sm px-3 py-1.5 text-xs text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
           <div className="flex gap-2">
-            <button onClick={handleAdd} className="px-3 py-1 text-xs bg-[#238636] text-white rounded">{t('create')}</button>
+            <button onClick={handleAdd} className="px-3 py-1 text-xs bg-[#238636] text-white rounded-sm">{t('create')}</button>
             <button onClick={() => setAdding(false)} className="px-3 py-1 text-xs text-[#8b949e]">{t('cancel')}</button>
           </div>
         </div>
@@ -95,7 +95,7 @@ export function ProjectsView() {
                         <div className="h-1 rounded-full bg-[#3fb950] transition-all"
                           style={{ width: `${pct}%` }} />
                       </div>
-                      <span className="text-xs text-[#8b949e] flex-shrink-0">{t('tasksCount', { done, total: pts.length })}</span>
+                      <span className="text-xs text-[#8b949e] shrink-0">{t('tasksCount', { done, total: pts.length })}</span>
                     </div>
                   </div>
                   <span className="text-[#8b949e] text-sm">{expanded === p.id ? '▲' : '▼'}</span>
@@ -108,7 +108,7 @@ export function ProjectsView() {
                     ) : (
                       open.map(task => (
                         <div key={task.id} className="flex items-center gap-2 px-4 py-2 border-b border-[#21262d] last:border-b-0">
-                          <div className="w-2 h-2 rounded-full flex-shrink-0"
+                          <div className="w-2 h-2 rounded-full shrink-0"
                             style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] }} />
                           <span className="flex-1 text-xs text-[#e6edf3] truncate">{task.title}</span>
                           {task.due_date && (
@@ -116,7 +116,7 @@ export function ProjectsView() {
                               {formatDate(task.due_date)}
                             </span>
                           )}
-                          <span className="text-[9px] px-1 rounded"
+                          <span className="text-[9px] px-1 rounded-sm"
                             style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] + '20',
                                      color: PRIORITY_COLORS[task.priority as TaskPriority] }}>
                             {priorityLabel(task.priority as TaskPriority)}
@@ -126,7 +126,7 @@ export function ProjectsView() {
                     )}
                     <div className="flex justify-end p-2">
                       <button onClick={() => handleDelete(p.id)}
-                        className="text-[9px] text-[#8b949e] hover:text-[#f85149] px-2 py-1 rounded transition-colors">
+                        className="text-[9px] text-[#8b949e] hover:text-[#f85149] px-2 py-1 rounded-sm transition-colors">
                         {t('deleteProject')}
                       </button>
                     </div>

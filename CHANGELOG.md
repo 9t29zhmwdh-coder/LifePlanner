@@ -5,6 +5,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.1.0] - 2026-08-03
+
+### Changed
+
+- Tailwind CSS 3 to 4. The config file is gone, the stylesheet imports tailwindcss directly, and PostCSS uses `@tailwindcss/postcss`. autoprefixer is no longer a dependency because version 4 prefixes on its own.
+- Three utility names were rewritten across eight components: `rounded` to `rounded-sm` 19 times, `outline-none` to `outline-hidden` 6 times, `flex-shrink-0` to `shrink-0` 8 times. Only the last two change behaviour. Measured under 4.3.3, `rounded` is still 0.25rem and kept as an alias; the scale did shift, but under the name `rounded-sm`, which this code never used. The rename is normalisation, not a fix.
+
+---
+
 ## [1.0.17] - 2026-08-02
 
 ### Changed
