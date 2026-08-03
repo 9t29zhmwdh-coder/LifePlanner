@@ -5,6 +5,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.2.0] - 2026-08-03
+
+### Changed
+
+- `sqlx` 0.8 to 0.9. Two query sites assemble their SQL with `format!`, because SQL cannot bind a list as one parameter, and 0.9 rejects that unless the string is asserted safe. The only interpolated part is a chain of question marks derived from the length of the id list; the ids go through `bind`.
+- `github/codeql-action` 4.37.3 to 4.37.4 and `actions/attest` 4.2.0 to 4.2.1, merged separately and carried by this version.
+
+### Added
+
+- A test that feeds two ids shaped like an attack, one of them `x'); DROP TABLE events; --`, into the search path. It returns nothing and the row count is unchanged, which proves the assertion the new sqlx demands rather than merely claiming it.
+
+### Removed
+
+- `recharts`. Dependabot proposed a 2 to 3 major, but the package is declared in `package.json` and imported in no source file. The built bundle keeps the same content hashes, which shows it was never in the output; `node_modules` drops by 18 MB, since recharts brings d3 with it.
+
+---
+
 ## [1.1.0] - 2026-08-03
 
 ### Changed
