@@ -45,7 +45,7 @@ export function SearchView() {
             value={query}
             onChange={e => handleChange(e.target.value)}
             placeholder={t('searchPlaceholder')}
-            className="w-full bg-[#21262d] border border-[#30363d] rounded-lg pl-9 pr-4 py-2.5 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]"
+            className="w-full bg-[#21262d] border border-[#30363d] rounded-lg pl-9 pr-4 py-2.5 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]"
           />
           {searching && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8b949e] text-xs">⟳</span>
@@ -139,7 +139,7 @@ function highlight(text: string, query: string): React.ReactNode {
   return (
     <>
       {text.slice(0, idx)}
-      <mark className="bg-[#d2992230] text-[#d29922] rounded px-0.5">{text.slice(idx, idx + query.length)}</mark>
+      <mark className="bg-[#d2992230] text-[#d29922] rounded-sm px-0.5">{text.slice(idx, idx + query.length)}</mark>
       {text.slice(idx + query.length)}
     </>
   )

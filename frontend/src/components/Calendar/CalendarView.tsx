@@ -70,7 +70,7 @@ export function CalendarView() {
                     {dayEvs.map(ev => (
                       <button key={ev.id}
                         onClick={() => setSelected(ev)}
-                        className="w-full text-left rounded px-1.5 py-0.5 text-xs truncate mb-0.5 transition-opacity hover:opacity-80"
+                        className="w-full text-left rounded-sm px-1.5 py-0.5 text-xs truncate mb-0.5 transition-opacity hover:opacity-80"
                         style={{
                           background: conflictIds.has(ev.id) ? '#f8514930' : '#58a6ff20',
                           color: conflictIds.has(ev.id) ? '#f85149' : '#79c0ff',

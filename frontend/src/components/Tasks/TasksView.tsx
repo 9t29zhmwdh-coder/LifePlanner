@@ -74,8 +74,8 @@ export function TasksView() {
           <input autoFocus value={newTitle} onChange={e => setNewTitle(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleAddTask(); if (e.key === 'Escape') setAdding(false) }}
             placeholder={t('newTaskPlaceholder')}
-            className="flex-1 bg-[#21262d] border border-[#30363d] rounded px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
-          <button onClick={handleAddTask} className="px-3 text-xs bg-[#238636] text-white rounded">{t('add')}</button>
+            className="flex-1 bg-[#21262d] border border-[#30363d] rounded-sm px-3 py-1.5 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
+          <button onClick={handleAddTask} className="px-3 text-xs bg-[#238636] text-white rounded-sm">{t('add')}</button>
           <button onClick={() => setAdding(false)} className="px-3 text-xs text-[#8b949e]">{t('cancel')}</button>
         </div>
       )}
@@ -89,7 +89,7 @@ export function TasksView() {
               className={`flex items-center gap-3 px-4 py-2.5 border-b border-[#21262d] hover:bg-[#161b22] transition-colors group
                 ${task.status === 'done' ? 'opacity-50' : ''}`}>
               <button onClick={() => handleToggleDone(task)}
-                className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors
+                className={`w-4 h-4 rounded-sm border shrink-0 flex items-center justify-center transition-colors
                   ${task.status === 'done' ? 'bg-[#3fb950] border-[#3fb950]' : 'border-[#30363d] hover:border-[#58a6ff]'}`}>
                 {task.status === 'done' && <span className="text-[10px] text-white">✓</span>}
               </button>
@@ -99,12 +99,12 @@ export function TasksView() {
                   {task.title}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[9px] px-1.5 py-0.5 rounded"
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-sm"
                     style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] + '20',
                              color: PRIORITY_COLORS[task.priority as TaskPriority] }}>
                     {priorityLabel(task.priority as TaskPriority)}
                   </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded"
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-sm"
                     style={{ background: ENERGY_COLORS[task.energy_level as EnergyLevel] + '20',
                              color: ENERGY_COLORS[task.energy_level as EnergyLevel] }}>
                     {energyLabel(task.energy_level as EnergyLevel)}

@@ -130,13 +130,13 @@ export function TodayView({ onNavigate }: Props) {
               <div className="space-y-2">
                 {summary.events.map(ev => (
                   <div key={ev.id} className="flex items-center gap-3 p-2 bg-[#0d1117] rounded-md">
-                    <div className="text-xs text-[#8b949e] w-12 flex-shrink-0">{formatTime(ev.start)}</div>
+                    <div className="text-xs text-[#8b949e] w-12 shrink-0">{formatTime(ev.start)}</div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm text-[#e6edf3] truncate">{ev.title}</div>
                       {ev.location && <div className="text-xs text-[#8b949e] truncate">📍 {ev.location}</div>}
                     </div>
                     {ev.end && (
-                      <div className="text-xs text-[#8b949e] flex-shrink-0">
+                      <div className="text-xs text-[#8b949e] shrink-0">
                         {Math.round((new Date(ev.end).getTime() - new Date(ev.start).getTime()) / 60000)} {t('minUnit')}
                       </div>
                     )}
@@ -160,12 +160,12 @@ export function TodayView({ onNavigate }: Props) {
               <div className="space-y-2">
                 {summary.priority_tasks.map(pt => (
                   <div key={pt.id} className="flex items-start gap-2">
-                    <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+                    <div className="w-2 h-2 rounded-full mt-1.5 shrink-0"
                       style={{ background: PRIORITY_COLORS[pt.priority as TaskPriority] }} />
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-[#e6edf3] truncate">{pt.title}</div>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="text-[9px] px-1 rounded"
+                        <span className="text-[9px] px-1 rounded-sm"
                           style={{ background: ENERGY_COLORS[pt.energy_level as EnergyLevel] + '20',
                                    color: ENERGY_COLORS[pt.energy_level as EnergyLevel] }}>
                           {energyLabel(pt.energy_level as EnergyLevel)}

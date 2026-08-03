@@ -78,7 +78,7 @@ export function CaptureView({ onNavigate }: Props) {
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder={t('textPlaceholder')}
-            className="w-full h-40 bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-2.5 text-sm text-[#e6edf3] resize-none focus:outline-none focus:border-[#58a6ff] placeholder-[#484f58] font-mono"
+            className="w-full h-40 bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-2.5 text-sm text-[#e6edf3] resize-none focus:outline-hidden focus:border-[#58a6ff] placeholder-[#484f58] font-mono"
           />
           <div className="flex gap-2 items-center">
             <button onClick={handleExtract} disabled={extracting || !text.trim()}
