@@ -1,6 +1,6 @@
 {
   "productName": "LifePlanner",
-  "version": "1.0.17",
+  "version": "1.1.0",
   "identifier": "dev.raystudio.lifeplanner",
   "build": {
     "beforeDevCommand": "npm --prefix ../frontend run dev",
