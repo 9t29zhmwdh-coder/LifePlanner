@@ -309,7 +309,8 @@ async fn fetch_events_by_ids(db: &Database, ids: &[String]) -> super::DbResult<V
     }
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(",");
     let sql = format!("SELECT * FROM events WHERE id IN ({placeholders})");
-    let mut q = sqlx::query(&sql);
+    // Interpoliert wird nur die Fragezeichen-Kette, die Werte gehen ueber bind.
+    let mut q = sqlx::query(sqlx::AssertSqlSafe(sql));
     for id in ids {
         q = q.bind(id);
     }
@@ -323,7 +324,8 @@ async fn fetch_tasks_by_ids(db: &Database, ids: &[String]) -> super::DbResult<Ve
     }
     let placeholders = ids.iter().map(|_| "?").collect::<Vec<_>>().join(",");
     let sql = format!("SELECT * FROM tasks WHERE id IN ({placeholders})");
-    let mut q = sqlx::query(&sql);
+    // Interpoliert wird nur die Fragezeichen-Kette, die Werte gehen ueber bind.
+    let mut q = sqlx::query(sqlx::AssertSqlSafe(sql));
     for id in ids {
         q = q.bind(id);
     }
@@ -335,4 +337,53 @@ async fn fetch_tasks_by_ids(db: &Database, ids: &[String]) -> super::DbResult<Ve
 pub struct SearchResults {
     pub events: Vec<Event>,
     pub tasks: Vec<Task>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Die beiden ID-Abfragen bauen ihr SQL mit `format!` zusammen, weil SQL
+    /// keine Liste als einzelnen Parameter kennt. Interpoliert wird dabei
+    /// ausschliesslich eine Kette von Fragezeichen; die Werte selbst gehen
+    /// ueber `bind`.
+    ///
+    /// sqlx 0.9 verlangt fuer solche Abfragen mit `AssertSqlSafe` eine
+    /// ausdrueckliche Zusicherung. Dieser Test belegt sie, statt sie nur zu
+    /// behaupten: eine ID, die wie ein Angriff aussieht, darf die Tabelle
+    /// nicht anfassen und auch nichts zurueckliefern.
+    #[tokio::test]
+    async fn eine_bosartige_id_veraendert_die_datenbank_nicht() {
+        let verzeichnis = std::env::temp_dir().join(format!(
+            "lp-injektion-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        let db = Database::open(&verzeichnis.join("test.db"))
+            .await
+            .expect("Datenbank");
+
+        let vorher: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM events")
+            .fetch_one(&db.pool)
+            .await
+            .expect("events-Tabelle vorhanden");
+
+        let bosartig = vec![
+            "x'); DROP TABLE events; --".to_string(),
+            "1 OR 1=1".to_string(),
+        ];
+        let treffer = fetch_events_by_ids(&db, &bosartig)
+            .await
+            .expect("Abfrage laeuft durch");
+
+        assert!(treffer.is_empty(), "keine dieser IDs existiert");
+
+        let nachher: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM events")
+            .fetch_one(&db.pool)
+            .await
+            .expect("events-Tabelle steht noch");
+        assert_eq!(vorher, nachher);
+
+        std::fs::remove_dir_all(&verzeichnis).ok();
+    }
 }
