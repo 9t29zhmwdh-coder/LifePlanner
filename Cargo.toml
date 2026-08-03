@@ -3,7 +3,7 @@ members = ["crates/lp-core", "crates/lp-cli", "src-tauri"]
 resolver = "2"
 
 [workspace.package]
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
 
 [workspace.dependencies]
@@ -13,7 +13,7 @@ tokio       = { version = "1",   features = ["full"] }
 reqwest     = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
 chrono      = { version = "0.4", features = ["serde"] }
 uuid        = { version = "1",   features = ["v4", "serde"] }
-sqlx        = { version = "0.8", features = ["sqlite", "runtime-tokio", "chrono", "uuid", "migrate"] }
+sqlx        = { version = "0.9", features = ["sqlite", "runtime-tokio", "chrono", "uuid", "migrate"] }
 thiserror   = "2"
 anyhow      = "1"
 tracing     = "0.1"
