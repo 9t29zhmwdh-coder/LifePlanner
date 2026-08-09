@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
-    "date-fns": "^3",
+    "date-fns": "^4",
     "react": "^19",
     "react-dom": "^19",
     "zustand": "^4"
