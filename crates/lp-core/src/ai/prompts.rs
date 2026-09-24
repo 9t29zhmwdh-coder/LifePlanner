@@ -92,7 +92,7 @@ TEXT:
 
 JSON-Format:
 {{"events": [{{"title": "...", "start": "2026-06-12T14:00:00Z", "duration_minutes": 60, "location": "..."}}], "tasks": [{{"title": "...", "due_date": "2026-06-15T00:00:00Z", "priority": "medium"}}]}}"#,
-        today.format("%A, %Y-%m-%d"),
+        today.with_timezone(&chrono::Local).format("%A, %Y-%m-%d"),
         head(text, MAX_PROMPT_CHARS)
     )
 }

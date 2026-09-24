@@ -5,6 +5,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.0] - 2026-09-24
+
+The README promised things the app did not do. This release makes them true or takes them out.
+
+### Added
+
+- **PDF import.** Open or drop a PDF with a text layer (up to 25 MB). Scanned PDFs without text are rejected with a message instead of an empty result.
+- **Open and drop files** in Capture: `.pdf`, `.eml` and `.txt`. Emails go through the email extractor, which uses the subject when a line gives no title.
+- **Preview before saving.** Every extraction (text, email, PDF, AI) now returns a preview with each collision against the calendar. Nothing is stored until you tick what you want and save; titles can be corrected first. Before, detection wrote straight into the database and the "Save" button did nothing.
+- **Calendar sync from the app.** One sync button per account, a file picker for ICS files and a password field for CalDAV (stored in the system keychain). The sync commands existed but the interface never called them, and CalDAV had no way to receive a password.
+- Priority, energy and project of a task can be changed from the task list, so energy sorting and project progress have something to work with.
+
+### Fixed
+
+- **Times were read as UTC.** "14:30" in a letter became 16:30 in Swiss summer. Extracted times, working hours, free slots and the boundaries of "today" now use local time.
+- **Calendar sync doubled every event** on each run. Events are matched by their calendar UID: known ones are updated, deleted ones removed.
+- The calendar view showed only today's events and never loaded the week; every refresh emptied it again.
+- The first line of a text ("Hallo zusammen") became the title of every appointment. Titles now come from the line that holds the date, deadlines from their own line.
+- German dates in deadlines ("bis 10.10.2026") were cut at the first dot and lost; the same deadline could also be taken for an appointment.
+- "bei" inside "beim" was taken as a place and swallowed the rest of the line.
+- Two panics on text with umlauts: the AI prompt and the time search cut strings by bytes instead of characters.
+- AI detection: the prompt now carries today's date, the answer is turned into real appointments and tasks (it was raw JSON before) and errors are shown instead of an empty result. Ollama gets `num_ctx`, `think: false` and a low temperature; the default model is `qwen3.5:4b`.
+- "Show completed" and project progress never saw completed tasks, because only open ones were loaded.
+- Stored settings that no longer matched the current fields were silently replaced by defaults, which dropped every calendar account.
+- The interface language follows the system language; untitled items show a placeholder in that language instead of a fixed German title.
+
+### Removed
+
+- The notification switch and the date locale setting. Neither had any effect.
+
+### Security
+
+- A content security policy for the window (it was `null`), explicit capabilities, and ad-hoc signing on macOS so the bundle has a stable identity.
+
+---
+
 ## [1.2.3] - 2026-08-27
 
 ### Changed

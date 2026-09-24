@@ -9,7 +9,7 @@ pub use priorities::*;
 pub use time_slots::*;
 
 use crate::models::*;
-use chrono::{TimeZone, Utc};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -24,21 +24,25 @@ pub struct DailySummary {
     pub score: u8,
 }
 
+/// Start and end of today where the person is. As UTC days, anything between
+/// midnight and 2 a.m. (Swiss summer) landed on the wrong day.
+pub fn today_range() -> (chrono::DateTime<Utc>, chrono::DateTime<Utc>) {
+    let date = chrono::Local::now().date_naive();
+    let start = date.and_hms_opt(0, 0, 0)
+        .and_then(crate::extractor::date_parser::local_to_utc)
+        .unwrap_or_else(Utc::now);
+    (start, start + chrono::Duration::days(1))
+}
+
 pub fn build_daily_summary(
     events: Vec<Event>,
     tasks: Vec<Task>,
     settings: &AppSettings,
 ) -> DailySummary {
-    let today = Utc::now();
-    let today_start = today.date_naive().and_hms_opt(0, 0, 0)
-        .and_then(|ndt| chrono::Utc.from_local_datetime(&ndt).single())
-        .unwrap_or(today);
-    let today_end = today.date_naive().and_hms_opt(23, 59, 59)
-        .and_then(|ndt| chrono::Utc.from_local_datetime(&ndt).single())
-        .unwrap_or(today);
+    let (today_start, today_end) = today_range();
 
     let today_events: Vec<Event> = events.iter()
-        .filter(|e| e.start >= today_start && e.start <= today_end)
+        .filter(|e| e.start >= today_start && e.start < today_end)
         .cloned()
         .collect();
 
@@ -68,7 +72,7 @@ pub fn build_daily_summary(
     let score = calculate_day_score(&today_events, &tasks_due, &tasks_overdue, &conflicts);
 
     DailySummary {
-        date: today.format("%Y-%m-%d").to_string(),
+        date: chrono::Local::now().format("%Y-%m-%d").to_string(),
         events: today_events,
         tasks_due,
         tasks_overdue,

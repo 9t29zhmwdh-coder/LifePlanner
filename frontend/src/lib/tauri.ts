@@ -162,14 +162,14 @@ export function errorText(error: unknown): string {
 function locale(): string {
   return getLang() === 'de' ? 'de-CH' : 'en-US'
 }
+export function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleString(locale(), { dateStyle: 'medium', timeStyle: 'short' })
+}
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(locale(), { weekday: 'short', day: '2-digit', month: '2-digit' })
 }
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })
-}
-export function formatDateTime(iso: string): string {
-  return `${formatDate(iso)}, ${formatTime(iso)}`
+  return new Date(iso).toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })
 }
 export function dayOfWeekLabel(n: number): string {
   return [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')][n] ?? '?'

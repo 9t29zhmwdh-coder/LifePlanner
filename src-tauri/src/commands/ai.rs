@@ -5,7 +5,7 @@ use lp_core::{
     db::queries::*,
     extractor::preview::{from_model_answer, preview, ExtractionPreview},
 };
-use chrono::{Duration, Utc};
+use chrono::Utc;
 use tauri::State;
 
 #[tauri::command]
@@ -24,11 +24,7 @@ pub async fn generate_daily_summary_ai(state: State<'_, AppState>) -> LpResult<S
         return Err(LpError::Ai("Ollama nicht verfügbar".into()));
     }
 
-    let now = Utc::now();
-    let from = now.date_naive().and_hms_opt(0, 0, 0)
-        .map(|n| n.and_utc())
-        .unwrap_or(now);
-    let to = from + Duration::days(1);
+    let (from, to) = lp_core::analyzer::today_range();
     let events = get_events_in_range(&state.db, from, to).await?;
     let tasks  = get_tasks(&state.db, false).await?;
     let summary = build_daily_summary(events, tasks, &settings);

@@ -24,7 +24,16 @@ pub fn pdf_text(bytes: &[u8]) -> Result<String, PdfError> {
     if text.trim().is_empty() {
         return Err(PdfError::NoText);
     }
-    Ok(text)
+    Ok(join_split_capitals(&text))
+}
+
+/// PDF text often keeps a kerned capital apart from its word ("T erminbestätigung").
+/// Single capitals that are never words on their own are joined back.
+fn join_split_capitals(text: &str) -> String {
+    static SPLIT: once_cell::sync::Lazy<regex::Regex> = once_cell::sync::Lazy::new(|| {
+        regex::Regex::new(r"\b([B-HJ-NP-ZÄÖÜ]) (\p{Ll}{2,})").unwrap()
+    });
+    SPLIT.replace_all(text, "$1$2").into_owned()
 }
 
 pub fn extract_from_pdf(bytes: &[u8]) -> Result<ExtractionResult, PdfError> {
@@ -36,6 +45,12 @@ mod tests {
     use super::*;
 
     const APPOINTMENT: &[u8] = include_bytes!("../../tests/fixtures/appointment.pdf");
+
+    #[test]
+    fn split_capitals_are_joined_but_real_words_stay() {
+        assert_eq!(join_split_capitals("T erminbestätigung"), "Terminbestätigung");
+        assert_eq!(join_split_capitals("A test and I think"), "A test and I think");
+    }
 
     #[test]
     fn reads_the_text_of_a_pdf() {
@@ -50,6 +65,8 @@ mod tests {
         assert_eq!(result.events.len(), 1, "{result:?}");
         let start = result.events[0].start.to_rfc3339();
         assert!(start.starts_with("2026-10-12"), "{start}");
+        assert_eq!(result.events[0].title, "Ihr Termin beim Zahnarzt");
+        assert_eq!(result.events[0].location.as_deref(), Some("Zahnarzt"));
     }
 
     #[test]

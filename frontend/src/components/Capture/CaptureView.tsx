@@ -1,5 +1,5 @@
 import { useRef, useState, type ClipboardEvent, type DragEvent } from 'react'
-import { api, errorText, titleOf, type ExtractionPreview } from '../../lib/tauri'
+import { api, errorText, formatDateTime, formatTime, titleOf, type ExtractionPreview } from '../../lib/tauri'
 import { usePlannerStore } from '../../stores/plannerStore'
 import { useSettingsStore } from '../../stores/settingsStore'
 import { useT } from '../../lib/i18n'
@@ -23,6 +23,8 @@ export function CaptureView({ onNavigate }: Props) {
   const [busy, setBusy] = useState<'detect' | 'ai' | 'file' | 'save' | null>(null)
   const [preview, setPreview] = useState<ExtractionPreview | null>(null)
   const [skipped, setSkipped] = useState<Set<string>>(new Set())
+  // Detected titles are a guess; the person can correct them before saving.
+  const [titles, setTitles] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
   const [savedCount, setSavedCount] = useState<number | null>(null)
   const [dragging, setDragging] = useState(false)
@@ -31,6 +33,7 @@ export function CaptureView({ onNavigate }: Props) {
     setBusy(kind)
     setPreview(null)
     setSkipped(new Set())
+    setTitles({})
     setError(null)
     setSavedCount(null)
     try {
@@ -85,7 +88,7 @@ export function CaptureView({ onNavigate }: Props) {
     setError(null)
     const { result } = preview
     const keep = <T extends { id: string; title: string }>(items: T[]) =>
-      items.filter(i => !skipped.has(i.id)).map(i => ({ ...i, title: titleOf(i) }))
+      items.filter(i => !skipped.has(i.id)).map(i => ({ ...i, title: titleOf({ title: titles[i.id] ?? i.title }) }))
     try {
       const count = await api.saveExtraction({ ...result, events: keep(result.events), tasks: keep(result.tasks) })
       await loadAll()
@@ -177,15 +180,16 @@ export function CaptureView({ onNavigate }: Props) {
                         <input type="checkbox" checked={!skipped.has(ev.id)} onChange={() => toggle(ev.id)}
                           disabled={savedCount !== null} className="mt-1" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm text-[#79c0ff] font-medium">{titleOf(ev)}</div>
+                          <TitleInput value={titles[ev.id] ?? ev.title} onChange={v => setTitles(s => ({ ...s, [ev.id]: v }))}
+                            className="text-[#79c0ff] font-medium" disabled={savedCount !== null} />
                           <div className="text-xs text-[#8b949e] mt-1">
-                            {new Date(ev.start).toLocaleString()}
-                            {ev.end && ` → ${new Date(ev.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                            {formatDateTime(ev.start)}
+                            {ev.end && ` → ${formatTime(ev.end)}`}
                           </div>
                           {ev.location && <div className="text-xs text-[#8b949e]">📍 {ev.location}</div>}
                           {conflictsOf(ev.id).map(c => (
                             <div key={c.existing_title + c.existing_start} className="text-xs text-[#d29922] mt-1">
-                              ⚠ {t('collidesWith', { title: c.existing_title || t('untitled'), time: new Date(c.existing_start).toLocaleString() })}
+                              ⚠ {t('collidesWith', { title: c.existing_title || t('untitled'), time: formatDateTime(c.existing_start) })}
                             </div>
                           ))}
                         </div>
@@ -204,10 +208,11 @@ export function CaptureView({ onNavigate }: Props) {
                         <input type="checkbox" checked={!skipped.has(task.id)} onChange={() => toggle(task.id)}
                           disabled={savedCount !== null} className="mt-1" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm text-[#e6edf3]">{titleOf(task)}</div>
+                          <TitleInput value={titles[task.id] ?? task.title} onChange={v => setTitles(s => ({ ...s, [task.id]: v }))}
+                            className="text-[#e6edf3]" disabled={savedCount !== null} />
                           {task.due_date && (
                             <div className="text-xs text-[#d29922] mt-1">
-                              {t('due')}: {new Date(task.due_date).toLocaleDateString()}
+                              {t('due')}: {formatDateTime(task.due_date)}
                             </div>
                           )}
                         </div>
@@ -237,5 +242,15 @@ export function CaptureView({ onNavigate }: Props) {
         )}
       </div>
     </div>
+  )
+}
+
+function TitleInput({ value, onChange, className, disabled }:
+  { value: string; onChange: (v: string) => void; className: string; disabled: boolean }) {
+  const t = useT()
+  return (
+    <input value={value} onChange={e => onChange(e.target.value)} disabled={disabled}
+      placeholder={t('untitled')} onClick={e => e.preventDefault()}
+      className={`w-full text-sm bg-transparent border-b border-transparent hover:border-[#30363d] focus:border-[#58a6ff] focus:outline-hidden ${className}`} />
   )
 }

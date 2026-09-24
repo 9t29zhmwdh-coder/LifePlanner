@@ -111,7 +111,7 @@ A native LifePlanner window should open once everything has compiled and install
 LifePlanner works fully without AI. If you want the local AI daily briefing:
 
 1. Install [Ollama](https://ollama.com)
-2. Run `ollama pull llama3`
+2. Run `ollama pull qwen3.5:4b`
 3. In LifePlanner, go to **Settings → Local AI** and set the Ollama URL
 
 ---

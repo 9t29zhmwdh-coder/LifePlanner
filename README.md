@@ -46,12 +46,13 @@ Then your calendar has them, and the extraction has nothing left to do.
 
 ## Features
 
-- **Smart Extraction**: Paste any text (email, chat, document) and LifePlanner detects dates, deadlines and tasks automatically
-- **Calendar Sync**: ICS files and CalDAV
-- **Conflict Detection**: Overlapping appointments are flagged instantly
-- **Free Slot Finder**: See where your day has breathing room
-- **Energy Sorting**: Tasks grouped by focus / creative / routine energy level
-- **Project Tracker**: Group tasks into projects with progress visualization
+- **Extraction with preview**: paste text, or open or drop a PDF, `.eml` or `.txt` file. LifePlanner lists the appointments and deadlines it found, marks every collision with your calendar, and saves only what you tick. Titles can be corrected before saving
+- **What it reads**: dates like `12.10.2026`, `12.10.`, `2026-10-12`, today, tomorrow, next Monday, in 3 days; times like `14:30`, read as local time. PDFs need a text layer; scanned PDFs without one are rejected with a message, not read
+- **Calendar Sync**: ICS files and CalDAV, read only. LifePlanner imports your calendar and never writes back. Sync from Settings; a second sync updates events instead of doubling them, and events deleted at the source disappear
+- **Conflict Detection**: overlapping appointments are flagged in the preview, the calendar and on the Today page
+- **Free Slot Finder**: see where your working hours still have room
+- **Energy Sorting**: tasks filtered by focus / creative / routine; click a task's label to change its energy or priority
+- **Project Tracker**: assign tasks to a project in the task list and follow its progress
 - **Daily AI Summary**: Local AI generates a plain-language briefing for your day
 - **Full-text Search**: SQLite FTS5-powered instant search across all events and tasks
 - **100% Offline**: No cloud, no account, no telemetry
@@ -67,7 +68,7 @@ Then your calendar has them, and the extraction has nothing left to do.
 | Tauri CLI | v2 |
 | [Ollama](https://ollama.com) | latest (optional, for AI features) |
 
-**Ollama model (recommended):** `llama3` or any instruction-tuned model
+**Ollama model (recommended):** `qwen3.5:4b`, small enough for 8 GB of memory. Any instruction-tuned model works; the AI detection asks for JSON, so very small models may fail with a visible error instead of a result
 
 ---
 
@@ -90,7 +91,7 @@ cargo tauri build
 
 To enable AI features, install [Ollama](https://ollama.com) and pull a model:
 ```bash
-ollama pull llama3
+ollama pull qwen3.5:4b
 ```
 
 Then set the Ollama URL in **Settings → Local AI**.
@@ -109,10 +110,10 @@ Local data is not removed automatically: see [Privacy](#privacy) below for exact
 
 LifePlanner is designed for complete data sovereignty:
 
-- All data stored locally in SQLite: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows)
+- All data stored locally in SQLite: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows), `~/.local/share/LifePlanner/` (Linux)
 - Calendar credentials stored in the OS keychain (macOS Keychain, Windows DPAPI), removable manually via Keychain Access / Credential Manager if desired
 - AI processing runs entirely on-device via Ollama. No data is sent to any server.
-- No analytics, no crash reporting, no external connections
+- No analytics, no crash reporting. The only network connections are the ones you configure: your CalDAV server and your local Ollama
 
 ---
 
