@@ -37,6 +37,7 @@ The README promised things the app did not do. This release makes them true or t
 
 ### Security
 
+- rustls 0.23.45 (RUSTSEC-2026-0285, TLS 1.3 handshake messages accepted across encryption levels; affects CalDAV connections).
 - A content security policy for the window (it was `null`), explicit capabilities, and ad-hoc signing on macOS so the bundle has a stable identity.
 
 ---
