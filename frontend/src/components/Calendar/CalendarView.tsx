@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { usePlannerStore } from '../../stores/plannerStore'
-import { api, formatTime, type CalEvent } from '../../lib/tauri'
+import { api, formatTime, titleOf, type CalEvent } from '../../lib/tauri'
 import { addDays, startOfWeek, format, isSameDay } from 'date-fns'
 import { de, enUS } from 'date-fns/locale'
 import { useT, getLang } from '../../lib/i18n'
@@ -76,7 +76,7 @@ export function CalendarView() {
                           color: conflictIds.has(ev.id) ? '#f85149' : '#79c0ff',
                           border: `1px solid ${conflictIds.has(ev.id) ? '#f85149' : '#58a6ff'}40`,
                         }}>
-                        {formatTime(ev.start)} {ev.title}
+                        {formatTime(ev.start)} {titleOf(ev)}
                       </button>
                     ))}
                   </div>
@@ -92,7 +92,7 @@ export function CalendarView() {
         <div className="border-t border-[#30363d] p-4 bg-[#161b22]">
           <div className="flex justify-between items-start">
             <div>
-              <div className="font-medium text-[#e6edf3]">{selected.title}</div>
+              <div className="font-medium text-[#e6edf3]">{titleOf(selected)}</div>
               <div className="text-xs text-[#8b949e] mt-1">
                 {format(new Date(selected.start), 'dd.MM.yyyy HH:mm')}
                 {selected.end && ` → ${formatTime(selected.end)}`}

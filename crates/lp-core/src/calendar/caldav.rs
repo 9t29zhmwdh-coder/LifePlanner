@@ -97,7 +97,7 @@ fn parse_ics_string(data: &str, calendar_id: &str) -> Result<Vec<Event>, ()> {
                     .and_then(|p| p.value.clone())
             };
 
-            let title = get("SUMMARY").unwrap_or_else(|| "Termin".into());
+            let title = get("SUMMARY").unwrap_or_default();
             let start_str = get("DTSTART").unwrap_or_default();
             let start = parse_dt(&start_str).unwrap_or_else(Utc::now);
             let end   = get("DTEND").and_then(|s| parse_dt(&s));

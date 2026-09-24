@@ -1,6 +1,8 @@
 pub mod date_parser;
 pub mod text;
 pub mod email;
+pub mod pdf;
+pub mod preview;
 
 use crate::models::{Event, Task};
 use serde::{Deserialize, Serialize};

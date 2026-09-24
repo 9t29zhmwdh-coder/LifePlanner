@@ -3,6 +3,7 @@ use lp_core::{
     ai::{ollama::OllamaClient, prompts::*},
     analyzer::build_daily_summary,
     db::queries::*,
+    extractor::preview::{from_model_answer, preview, ExtractionPreview},
 };
 use chrono::{Duration, Utc};
 use tauri::State;
@@ -67,7 +68,7 @@ pub async fn ai_classify_task(
 pub async fn ai_extract_from_text(
     text: String,
     state: State<'_, AppState>,
-) -> LpResult<serde_json::Value> {
+) -> LpResult<ExtractionPreview> {
     let settings = state.settings.read().await.clone();
     let client = OllamaClient::new(&settings.ollama_url, &settings.text_model);
 
@@ -75,13 +76,11 @@ pub async fn ai_extract_from_text(
         return Err(LpError::Ai("Ollama nicht verfügbar".into()));
     }
 
-    let prompt = extract_events_prompt(&text);
+    let prompt = extract_events_prompt(&text, Utc::now());
     let response = client.generate(&prompt).await
         .map_err(|e| LpError::Ai(e.to_string()))?;
-
-    let json_str = response.trim();
-    let start = json_str.find('{').unwrap_or(0);
-    let end = json_str.rfind('}').map(|i| i + 1).unwrap_or(json_str.len());
-    serde_json::from_str(&json_str[start..end])
-        .map_err(|e| LpError::Ai(format!("JSON parse error: {}", e)))
+    let result = from_model_answer(&response, &text)
+        .map_err(|e| LpError::Ai(format!("JSON parse error: {}", e)))?;
+    let calendar = get_all_events(&state.db).await?;
+    Ok(preview(result, &calendar, settings.default_event_duration_minutes))
 }

@@ -27,7 +27,6 @@ pub fn extract_from_text(text: &str) -> ExtractionResult {
         if let Some(date_info) = dates.iter().find(|d| !d.is_deadline) {
             let mut ev = Event::new(&title, date_info.datetime);
             ev.source = EventSource::Extracted;
-            ev.end = Some(date_info.datetime + chrono::Duration::hours(1));
             if let Some(loc) = extract_location(text) {
                 ev.location = Some(loc);
             }
@@ -77,7 +76,6 @@ pub fn extract_from_text(text: &str) -> ExtractionResult {
         for date_info in dates.iter().take(1) {
             let mut ev = Event::new(&title, date_info.datetime);
             ev.source = EventSource::Extracted;
-            ev.end = Some(date_info.datetime + chrono::Duration::hours(1));
             events.push(ev);
         }
     }
@@ -93,7 +91,8 @@ fn extract_title(text: &str) -> String {
     text.lines()
         .find(|l| !l.trim().is_empty())
         .map(|l| l.trim().chars().take(80).collect::<String>())
-        .unwrap_or_else(|| "Unbekannter Termin".into())
+        // Empty means untitled; the app shows a placeholder in the person's language.
+        .unwrap_or_default()
 }
 
 fn extract_location(text: &str) -> Option<String> {

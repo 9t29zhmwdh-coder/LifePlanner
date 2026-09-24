@@ -29,7 +29,7 @@ pub fn extract_from_email(email_text: &str) -> ExtractionResult {
     // Prefix subject to extracted event/task titles if they're generic
     if !subject.is_empty() {
         for ev in &mut result.events {
-            if ev.title == "Unbekannter Termin" {
+            if ev.title.is_empty() {
                 ev.title = subject.clone();
             }
         }

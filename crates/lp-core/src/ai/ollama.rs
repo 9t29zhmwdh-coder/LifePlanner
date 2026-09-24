@@ -15,6 +15,17 @@ struct GenerateRequest<'a> {
     model: &'a str,
     prompt: &'a str,
     stream: bool,
+    // Qwen models reason out loud by default; that text would land in the answer.
+    think: bool,
+    options: GenerateOptions,
+}
+
+/// Without num_ctx Ollama reserves the model's full context window (LifeSort saw
+/// 12.5 GB instead of 4); a low temperature keeps extraction repeatable.
+#[derive(Serialize)]
+struct GenerateOptions {
+    num_ctx: u32,
+    temperature: f32,
 }
 
 #[derive(Deserialize)]
@@ -50,7 +61,13 @@ impl OllamaClient {
     pub async fn generate(&self, prompt: &str) -> Result<String, OllamaError> {
         let resp = self.client
             .post(format!("{}/api/generate", self.base_url))
-            .json(&GenerateRequest { model: &self.model, prompt, stream: false })
+            .json(&GenerateRequest {
+                model: &self.model,
+                prompt,
+                stream: false,
+                think: false,
+                options: GenerateOptions { num_ctx: 4096, temperature: 0.1 },
+            })
             .send()
             .await?;
 

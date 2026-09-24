@@ -42,7 +42,8 @@ export const usePlannerStore = create<PlannerStore>((set, get) => ({
     try {
       const [summary, tasks, projects, freeSlots] = await Promise.all([
         api.getDailySummary(),
-        api.getTasks(false),
+        // Done tasks too: "Show completed" and project progress need them.
+        api.getTasks(true),
         api.getProjects(),
         api.getFreeSlots(),
       ])

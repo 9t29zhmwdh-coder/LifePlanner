@@ -3,14 +3,12 @@ import { api, AppSettings } from '../lib/tauri'
 
 const DEFAULTS: AppSettings = {
   ollama_url: 'http://localhost:11434',
-  text_model: 'llama3',
+  text_model: 'qwen3.5:4b',
   auto_extract_on_paste: true,
   default_event_duration_minutes: 60,
   work_start_hour: 8,
   work_end_hour: 18,
   min_free_slot_minutes: 30,
-  enable_notifications: true,
-  locale: 'de-CH',
   calendar_accounts: [],
 }
 

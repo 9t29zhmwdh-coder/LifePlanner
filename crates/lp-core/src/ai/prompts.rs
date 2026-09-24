@@ -71,15 +71,46 @@ JSON-Format:
     )
 }
 
-pub fn extract_events_prompt(text: &str) -> String {
+/// Characters of source text sent to the model; longer mails are cut.
+const MAX_PROMPT_CHARS: usize = 1500;
+
+/// Cuts by characters, not bytes: a byte cut through an umlaut panicked.
+fn head(text: &str, max_chars: usize) -> &str {
+    match text.char_indices().nth(max_chars) {
+        Some((byte, _)) => &text[..byte],
+        None => text,
+    }
+}
+
+/// The model cannot know today's date; without it "morgen" or "nächsten Freitag" had nothing to count from.
+pub fn extract_events_prompt(text: &str, today: chrono::DateTime<chrono::Utc>) -> String {
     format!(
-        r#"Extrahiere Termine und Aufgaben aus dem folgenden Text. Antworte NUR mit JSON:
+        r#"Heute ist {}. Extrahiere Termine und Aufgaben aus dem folgenden Text. Antworte NUR mit JSON:
 
 TEXT:
 {}
 
 JSON-Format:
 {{"events": [{{"title": "...", "start": "2026-06-12T14:00:00Z", "duration_minutes": 60, "location": "..."}}], "tasks": [{{"title": "...", "due_date": "2026-06-15T00:00:00Z", "priority": "medium"}}]}}"#,
-        &text[..text.len().min(1500)]
+        today.format("%A, %Y-%m-%d"),
+        head(text, MAX_PROMPT_CHARS)
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn long_german_text_is_cut_between_characters() {
+        let text = "ä".repeat(2000);
+        let prompt = extract_events_prompt(&text, chrono::Utc::now());
+        assert_eq!(prompt.matches('ä').count(), MAX_PROMPT_CHARS);
+    }
+
+    #[test]
+    fn the_prompt_names_today() {
+        let today = chrono::DateTime::parse_from_rfc3339("2026-09-24T08:00:00Z").unwrap().with_timezone(&chrono::Utc);
+        assert!(extract_events_prompt("x", today).contains("2026-09-24"));
+    }
 }

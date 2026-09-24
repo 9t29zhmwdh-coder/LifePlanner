@@ -82,7 +82,7 @@ export function ProjectsView() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-[#e6edf3] truncate">{p.title}</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full"
+                      <span className="text-xs px-1.5 py-0.5 rounded-full"
                         style={{ background: statusColor(p.status) + '20', color: statusColor(p.status) }}>
                         {statusLabel(p.status)}
                       </span>
@@ -112,11 +112,11 @@ export function ProjectsView() {
                             style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] }} />
                           <span className="flex-1 text-xs text-[#e6edf3] truncate">{task.title}</span>
                           {task.due_date && (
-                            <span className={`text-[9px] ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
+                            <span className={`text-xs ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
                               {formatDate(task.due_date)}
                             </span>
                           )}
-                          <span className="text-[9px] px-1 rounded-sm"
+                          <span className="text-xs px-1 rounded-sm"
                             style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] + '20',
                                      color: PRIORITY_COLORS[task.priority as TaskPriority] }}>
                             {priorityLabel(task.priority as TaskPriority)}
@@ -126,7 +126,7 @@ export function ProjectsView() {
                     )}
                     <div className="flex justify-end p-2">
                       <button onClick={() => handleDelete(p.id)}
-                        className="text-[9px] text-[#8b949e] hover:text-[#f85149] px-2 py-1 rounded-sm transition-colors">
+                        className="text-xs text-[#8b949e] hover:text-[#f85149] px-2 py-1 rounded-sm transition-colors">
                         {t('deleteProject')}
                       </button>
                     </div>

@@ -38,7 +38,13 @@ impl CalendarAccount {
     }
 }
 
+/// Small enough for 8 GB Macs and measured to follow the JSON format reliably (LifeSort).
+pub const DEFAULT_TEXT_MODEL: &str = "qwen3.5:4b";
+
+// `default` keeps stored settings readable when a field is added; a parse
+// failure used to fall back to defaults and silently drop every calendar account.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
 pub struct AppSettings {
     pub ollama_url: String,
     pub text_model: String,
@@ -47,8 +53,6 @@ pub struct AppSettings {
     pub work_start_hour: u8,
     pub work_end_hour: u8,
     pub min_free_slot_minutes: u32,
-    pub enable_notifications: bool,
-    pub locale: String,
     pub default_calendar_id: Option<String>,
     pub calendar_accounts: Vec<CalendarAccount>,
 }
@@ -57,17 +61,15 @@ impl Default for AppSettings {
     fn default() -> Self {
         Self {
             ollama_url: "http://localhost:11434".into(),
-            text_model: "llama3".into(),
+            text_model: DEFAULT_TEXT_MODEL.into(),
             auto_extract_on_paste: true,
             default_event_duration_minutes: 60,
             work_start_hour: 8,
             work_end_hour: 18,
             min_free_slot_minutes: 30,
-            enable_notifications: true,
-            locale: "de-CH".into(),
             default_calendar_id: None,
             calendar_accounts: vec![
-                CalendarAccount::new_local("Persönlich"),
+                CalendarAccount::new_local("Personal"),
             ],
         }
     }
