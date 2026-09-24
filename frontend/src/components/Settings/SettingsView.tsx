@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { open } from '@tauri-apps/plugin-dialog'
 import { useSettingsStore } from '../../stores/settingsStore'
-import { api, newUuid, type CalendarAccount, type CalendarKind } from '../../lib/tauri'
+import { usePlannerStore } from '../../stores/plannerStore'
+import { api, errorText, newUuid, type CalendarAccount, type CalendarKind } from '../../lib/tauri'
 import { useT } from '../../lib/i18n'
 
 export function SettingsView() {
@@ -9,7 +11,10 @@ export function SettingsView() {
     { value: 'ics_file', label: t('calIcsFile') },
     { value: 'cal_dav', label: t('calCaldav') },
   ]
-  const { settings, save } = useSettingsStore()
+  const { settings, save, load } = useSettingsStore()
+  const { loadAll } = usePlannerStore()
+  const [password, setPassword] = useState('')
+  const [syncState, setSyncState] = useState<Record<string, string>>({})
   const [draft, setDraft] = useState(settings)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<'ok' | 'fail' | null>(null)
@@ -35,20 +40,48 @@ export function SettingsView() {
     }
   }
 
-  const handleAddCalendar = () => {
+  // Accounts are stored right away (the CalDAV password goes to the keychain),
+  // not with "Save settings", so the sync button works immediately.
+  const handleAddCalendar = async () => {
     if (!newCal.name) return
     const acc: CalendarAccount = {
       id: newUuid(), name: newCal.name!, kind: newCal.kind ?? 'ics_file',
       url: newCal.url, ics_path: newCal.ics_path, username: newCal.username,
       color: newCal.color ?? '#58a6ff', enabled: true,
     }
-    setDraft(d => ({ ...d, calendar_accounts: [...d.calendar_accounts, acc] }))
-    setNewCal({ kind: 'ics_file', color: '#58a6ff', enabled: true })
-    setAddingCal(false)
+    try {
+      await api.addAccount(acc, acc.kind === 'cal_dav' ? password || undefined : undefined)
+      setDraft(d => ({ ...d, calendar_accounts: [...d.calendar_accounts, acc] }))
+      setNewCal({ kind: 'ics_file', color: '#58a6ff', enabled: true })
+      setPassword('')
+      setAddingCal(false)
+      await handleSync(acc.id)
+    } catch (e) {
+      setSyncState(s => ({ ...s, [acc.id]: errorText(e) }))
+    }
   }
 
-  const handleRemoveCal = (id: string) => {
+  const handleRemoveCal = async (id: string) => {
+    await api.removeAccount(id)
     setDraft(d => ({ ...d, calendar_accounts: d.calendar_accounts.filter(a => a.id !== id) }))
+  }
+
+  const handleSync = async (id: string) => {
+    setSyncState(s => ({ ...s, [id]: '⟳' }))
+    try {
+      const count = await api.syncCalendar(id)
+      setSyncState(s => ({ ...s, [id]: t('syncedCount', { n: count }) }))
+      await Promise.all([load(), loadAll()])
+      const stored = useSettingsStore.getState().settings.calendar_accounts
+      setDraft(d => ({ ...d, calendar_accounts: stored }))
+    } catch (e) {
+      setSyncState(s => ({ ...s, [id]: errorText(e) }))
+    }
+  }
+
+  const chooseIcsFile = async () => {
+    const path = await open({ multiple: false, filters: [{ name: 'iCalendar', extensions: ['ics'] }] })
+    if (typeof path === 'string') setNewCal(c => ({ ...c, ics_path: path }))
   }
 
   return (
@@ -106,18 +139,6 @@ export function SettingsView() {
         <Toggle label={t('autoExtract')}
           value={draft.auto_extract_on_paste}
           onChange={v => setDraft(d => ({ ...d, auto_extract_on_paste: v }))} />
-        <Toggle label={t('enableNotifications')}
-          value={draft.enable_notifications}
-          onChange={v => setDraft(d => ({ ...d, enable_notifications: v }))} />
-        <Field label={t('languageLocale')}>
-          <select value={draft.locale} onChange={e => setDraft(d => ({ ...d, locale: e.target.value }))}
-            className={input}>
-            <option value="de-CH">Deutsch (Schweiz)</option>
-            <option value="de-DE">Deutsch (Deutschland)</option>
-            <option value="de-AT">Deutsch (Österreich)</option>
-            <option value="en-US">English (US)</option>
-          </select>
-        </Field>
       </Section>
 
       {/* Calendar accounts */}
@@ -129,8 +150,17 @@ export function SettingsView() {
                 <div className="w-3 h-3 rounded-full shrink-0" style={{ background: acc.color ?? '#58a6ff' }} />
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-medium text-[#e6edf3] truncate">{acc.name}</div>
-                  <div className="text-[9px] text-[#8b949e]">{CALENDAR_KINDS.find(k => k.value === acc.kind)?.label}</div>
+                  <div className="text-xs text-[#8b949e]">
+                    {acc.kind === 'local' ? t('calLocal') : CALENDAR_KINDS.find(k => k.value === acc.kind)?.label}
+                    {syncState[acc.id]
+                      ? ` · ${syncState[acc.id]}`
+                      : acc.last_synced && ` · ${t('lastSynced', { time: new Date(acc.last_synced).toLocaleString() })}`}
+                  </div>
                 </div>
+                {acc.kind !== 'local' && (
+                  <button onClick={() => handleSync(acc.id)}
+                    className="text-xs text-[#58a6ff] hover:underline">{t('syncNow')}</button>
+                )}
                 <button onClick={() => handleRemoveCal(acc.id)}
                   className="text-[#8b949e] hover:text-[#f85149] text-xs">×</button>
               </div>
@@ -157,8 +187,13 @@ export function SettingsView() {
             </Field>
             {newCal.kind === 'ics_file' ? (
               <Field label={t('filePath')}>
-                <input value={newCal.ics_path ?? ''} onChange={e => setNewCal(c => ({ ...c, ics_path: e.target.value }))}
-                  placeholder="/Users/me/calendar.ics" className={input} />
+                <div className="flex gap-2">
+                  <input value={newCal.ics_path ?? ''} readOnly placeholder={t('noFileChosen')} className={input} />
+                  <button onClick={chooseIcsFile}
+                    className="px-3 py-1.5 text-xs bg-[#21262d] border border-[#30363d] hover:border-[#58a6ff] text-[#e6edf3] rounded-md whitespace-nowrap">
+                    {t('chooseFile')}
+                  </button>
+                </div>
               </Field>
             ) : (
               <>
@@ -169,6 +204,10 @@ export function SettingsView() {
                 <Field label={t('username')}>
                   <input value={newCal.username ?? ''} onChange={e => setNewCal(c => ({ ...c, username: e.target.value }))}
                     className={input} />
+                </Field>
+                <Field label={t('password')}>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                    autoComplete="off" className={input} />
                 </Field>
               </>
             )}

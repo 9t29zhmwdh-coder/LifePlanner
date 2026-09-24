@@ -48,12 +48,13 @@ ankommen. Dann stehen sie im Kalender, und für die Extraktion bleibt nichts
 
 ## Funktionen
 
-- **Intelligente Erkennung**: Text einfügen (E-Mail, Chat, Dokument) und LifePlanner erkennt Daten, Fristen und Aufgaben automatisch
-- **Kalender-Sync**: ICS-Dateien und CalDAV
-- **Konflikterkennung**: Überschneidungen werden sofort angezeigt
-- **Freie-Zeitfenster-Finder**: Zeigt, wo im Tag noch Luft ist
-- **Energie-Sortierung**: Aufgaben nach Fokus- / Kreativ- / Routine-Energie gruppiert
-- **Projekt-Tracker**: Aufgaben in Projekte mit Fortschrittsanzeige bündeln
+- **Erkennung mit Vorschau**: Text einfügen oder ein PDF, eine `.eml`- oder `.txt`-Datei öffnen oder hineinziehen. LifePlanner listet die gefundenen Termine und Fristen, markiert jede Überschneidung mit deinem Kalender und speichert nur, was du anhakst. Titel lassen sich vor dem Speichern korrigieren
+- **Was erkannt wird**: Daten wie `12.10.2026`, `12.10.`, `2026-10-12`, heute, morgen, nächsten Montag, in 3 Tagen; Uhrzeiten wie `14:30`, gelesen als Ortszeit. PDFs brauchen eine Textebene; gescannte PDFs ohne Text werden mit einer Meldung abgelehnt, nicht gelesen
+- **Kalender-Sync**: ICS-Dateien und CalDAV, nur lesend. LifePlanner übernimmt deinen Kalender und schreibt nie zurück. Abgleich in den Einstellungen; ein zweiter Abgleich aktualisiert Termine statt sie zu verdoppeln, und an der Quelle gelöschte Termine verschwinden
+- **Konflikterkennung**: Überschneidungen werden in der Vorschau, im Kalender und auf der Heute-Seite markiert
+- **Freie-Zeitfenster-Finder**: Zeigt, wo in deiner Arbeitszeit noch Luft ist
+- **Energie-Sortierung**: Aufgaben nach Fokus / Kreativ / Routine filtern; ein Klick auf die Marke einer Aufgabe ändert Energie oder Priorität
+- **Projekt-Tracker**: Aufgaben in der Aufgabenliste einem Projekt zuordnen und den Fortschritt verfolgen
 - **Tages-KI-Zusammenfassung**: Lokale KI erstellt einen verständlichen Tagesüberblick
 - **Volltextsuche**: SQLite-FTS5-gestützte Sofortsuche über alle Termine und Aufgaben
 - **100 % Offline**: Kein Cloud-Zwang, kein Account, kein Tracking
@@ -69,7 +70,7 @@ ankommen. Dann stehen sie im Kalender, und für die Extraktion bleibt nichts
 | Tauri CLI | v2 |
 | [Ollama](https://ollama.com) | aktuell (optional, für KI-Funktionen) |
 
-**Empfohlenes Ollama-Modell:** `llama3` oder ein anderes Instruction-Modell
+**Empfohlenes Ollama-Modell:** `qwen3.5:4b`, klein genug für 8 GB Arbeitsspeicher. Jedes Instruction-Modell funktioniert; die KI-Erkennung verlangt JSON, sehr kleine Modelle scheitern daher mit einer sichtbaren Fehlermeldung statt einem Ergebnis
 
 ---
 
@@ -92,7 +93,7 @@ cargo tauri build
 
 Für KI-Funktionen [Ollama](https://ollama.com) installieren und ein Modell laden:
 ```bash
-ollama pull llama3
+ollama pull qwen3.5:4b
 ```
 
 Dann unter **Einstellungen → Lokale KI** die Ollama-URL eintragen.
@@ -111,10 +112,10 @@ Lokale Daten werden dabei nicht automatisch entfernt: siehe [Datenschutz](#daten
 
 LifePlanner wurde für vollständige Datensouveränität entwickelt:
 
-- Alle Daten werden lokal in SQLite gespeichert: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows)
+- Alle Daten werden lokal in SQLite gespeichert: `~/Library/Application Support/LifePlanner/` (macOS), `%APPDATA%\LifePlanner\` (Windows), `~/.local/share/LifePlanner/` (Linux)
 - Kalender-Zugangsdaten im OS-Schlüsselbund (macOS Keychain, Windows DPAPI), bei Bedarf manuell über Keychain Access / Credential Manager entfernbar
 - KI-Verarbeitung läuft vollständig lokal via Ollama. Keine Daten verlassen das Gerät.
-- Keine Analyse, kein Absturzbericht, keine externen Verbindungen
+- Keine Analyse, kein Absturzbericht. Netzwerkverbindungen gibt es nur zu dem, was du selbst einrichtest: deinem CalDAV-Server und deinem lokalen Ollama
 
 ---
 

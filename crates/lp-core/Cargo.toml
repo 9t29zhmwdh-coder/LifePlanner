@@ -11,6 +11,7 @@ reqwest     = { workspace = true }
 chrono      = { workspace = true }
 uuid        = { workspace = true }
 sqlx        = { workspace = true }
+pdf-extract = "0.12"
 thiserror   = { workspace = true }
 regex       = { workspace = true }
 once_cell   = { workspace = true }
@@ -22,3 +23,5 @@ ical        = "0.11"
 # Feature hier wuerde den Backend auch dann aktivieren, wenn die echte
 # Abhaengigkeit ihn verliert, und der Test pruefte seine eigene Konfiguration.
 keyring = "3"
+tempfile = "3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

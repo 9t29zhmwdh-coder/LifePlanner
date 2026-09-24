@@ -30,7 +30,7 @@ pub fn parse_ics_file(path: &Path) -> Result<Vec<Event>, IcsError> {
             };
 
             let uid = get("UID").unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
-            let title = get("SUMMARY").unwrap_or_else(|| "Unbekannter Termin".into());
+            let title = get("SUMMARY").unwrap_or_default();
             let description = get("DESCRIPTION");
             let location = get("LOCATION");
 

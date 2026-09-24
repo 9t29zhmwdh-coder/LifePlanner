@@ -5,9 +5,14 @@ import { api, PRIORITY_COLORS, priorityLabel, ENERGY_COLORS, energyLabel, format
 import { useT } from '../../lib/i18n'
 
 const ENERGY_GROUPS: EnergyLevel[] = ['high', 'medium', 'low']
+const PRIORITIES: TaskPriority[] = ['critical', 'high', 'medium', 'low', 'someday']
+
+function nextOf<T>(list: T[], current: T): T {
+  return list[(list.indexOf(current) + 1) % list.length]
+}
 
 export function TasksView() {
-  const { tasks, loadAll } = usePlannerStore()
+  const { tasks, projects, loadAll } = usePlannerStore()
   const [filter, setFilter] = useState<'all' | EnergyLevel>('all')
   const [showDone, setShowDone] = useState(false)
   const [adding, setAdding] = useState(false)
@@ -23,6 +28,13 @@ export function TasksView() {
   const handleToggleDone = async (t: Task) => {
     const next: TaskStatus = t.status === 'done' ? 'todo' : 'done'
     await api.setTaskStatus(t.id, next)
+    await loadAll()
+  }
+
+  // Priority, energy and project were shown but could not be changed, so energy
+  // sorting and project progress never had anything to work with.
+  const handleChange = async (task: Task, change: Partial<Task>) => {
+    await api.updateTask({ ...task, ...change, updated_at: new Date().toISOString() })
     await loadAll()
   }
 
@@ -91,7 +103,7 @@ export function TasksView() {
               <button onClick={() => handleToggleDone(task)}
                 className={`w-4 h-4 rounded-sm border shrink-0 flex items-center justify-center transition-colors
                   ${task.status === 'done' ? 'bg-[#3fb950] border-[#3fb950]' : 'border-[#30363d] hover:border-[#58a6ff]'}`}>
-                {task.status === 'done' && <span className="text-[10px] text-white">✓</span>}
+                {task.status === 'done' && <span className="text-xs text-white">✓</span>}
               </button>
 
               <div className="flex-1 min-w-0">
@@ -99,23 +111,35 @@ export function TasksView() {
                   {task.title}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-sm"
+                  <button title={t('clickToChange')}
+                    onClick={() => handleChange(task, { priority: nextOf(PRIORITIES, task.priority) })}
+                    className="text-xs px-1.5 py-0.5 rounded-sm hover:brightness-125"
                     style={{ background: PRIORITY_COLORS[task.priority as TaskPriority] + '20',
                              color: PRIORITY_COLORS[task.priority as TaskPriority] }}>
                     {priorityLabel(task.priority as TaskPriority)}
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-sm"
+                  </button>
+                  <button title={t('clickToChange')}
+                    onClick={() => handleChange(task, { energy_level: nextOf(ENERGY_GROUPS, task.energy_level) })}
+                    className="text-xs px-1.5 py-0.5 rounded-sm hover:brightness-125"
                     style={{ background: ENERGY_COLORS[task.energy_level as EnergyLevel] + '20',
                              color: ENERGY_COLORS[task.energy_level as EnergyLevel] }}>
                     {energyLabel(task.energy_level as EnergyLevel)}
-                  </span>
+                  </button>
+                  {projects.length > 0 && (
+                    <select value={task.project_id ?? ''}
+                      onChange={e => handleChange(task, { project_id: e.target.value || undefined })}
+                      className="text-xs bg-transparent text-[#8b949e] border border-[#30363d] rounded-sm px-1 py-0.5">
+                      <option value="">{t('noProject')}</option>
+                      {projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                    </select>
+                  )}
                   {task.due_date && (
-                    <span className={`text-[9px] ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
+                    <span className={`text-xs ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
                       {t('due')}: {formatDate(task.due_date)}
                     </span>
                   )}
                   {task.estimated_minutes && (
-                    <span className="text-[9px] text-[#8b949e]">{task.estimated_minutes} {t('minUnit')}</span>
+                    <span className="text-xs text-[#8b949e]">{task.estimated_minutes} {t('minUnit')}</span>
                   )}
                 </div>
               </div>

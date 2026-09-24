@@ -1,5 +1,6 @@
 use crate::models::{AppSettings, Event};
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, Local, Utc};
+use crate::extractor::date_parser::local_to_utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -11,14 +12,13 @@ pub struct TimeSlot {
 
 pub fn find_free_slots(events: &[Event], settings: &AppSettings) -> Vec<TimeSlot> {
     let now = Utc::now();
-    let date = now.date_naive();
-
-    let work_start = Utc.from_utc_datetime(
-        &date.and_hms_opt(settings.work_start_hour as u32, 0, 0).unwrap_or_default()
-    );
-    let work_end = Utc.from_utc_datetime(
-        &date.and_hms_opt(settings.work_end_hour as u32, 0, 0).unwrap_or_default()
-    );
+    // Working hours are wall-clock hours; as UTC they ran from 10 to 20 in Swiss summer.
+    let date = Local::now().date_naive();
+    let at_hour = |hour: u8| {
+        date.and_hms_opt(u32::from(hour.min(23)), 0, 0).and_then(local_to_utc).unwrap_or(now)
+    };
+    let work_start = at_hour(settings.work_start_hour);
+    let work_end = at_hour(settings.work_end_hour);
     let min_dur = settings.min_free_slot_minutes as i64;
 
     // Only confirmed events that overlap with work hours

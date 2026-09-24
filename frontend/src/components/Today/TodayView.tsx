@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { usePlannerStore } from '../../stores/plannerStore'
-import { api, formatTime, formatDate, PRIORITY_COLORS, energyLabel, ENERGY_COLORS, type TaskPriority, type EnergyLevel } from '../../lib/tauri'
+import { api, formatTime, titleOf, formatDate, PRIORITY_COLORS, energyLabel, ENERGY_COLORS, type TaskPriority, type EnergyLevel } from '../../lib/tauri'
 import { useT, getLang } from '../../lib/i18n'
 
 type Tab = 'today' | 'calendar' | 'tasks' | 'projects' | 'capture' | 'search' | 'settings'
@@ -132,7 +132,7 @@ export function TodayView({ onNavigate }: Props) {
                   <div key={ev.id} className="flex items-center gap-3 p-2 bg-[#0d1117] rounded-md">
                     <div className="text-xs text-[#8b949e] w-12 shrink-0">{formatTime(ev.start)}</div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm text-[#e6edf3] truncate">{ev.title}</div>
+                      <div className="text-sm text-[#e6edf3] truncate">{titleOf(ev)}</div>
                       {ev.location && <div className="text-xs text-[#8b949e] truncate">📍 {ev.location}</div>}
                     </div>
                     {ev.end && (
@@ -165,7 +165,7 @@ export function TodayView({ onNavigate }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-[#e6edf3] truncate">{pt.title}</div>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="text-[9px] px-1 rounded-sm"
+                        <span className="text-xs px-1 rounded-sm"
                           style={{ background: ENERGY_COLORS[pt.energy_level as EnergyLevel] + '20',
                                    color: ENERGY_COLORS[pt.energy_level as EnergyLevel] }}>
                           {energyLabel(pt.energy_level as EnergyLevel)}
@@ -184,7 +184,7 @@ export function TodayView({ onNavigate }: Props) {
               <div className="text-sm font-medium text-[#f85149] mb-2">⚠ {summary.conflicts.length > 1 ? t('scheduleConflicts') : t('scheduleConflict')}</div>
               {summary.conflicts.map((c, i) => (
                 <div key={i} className="text-xs text-[#e6edf3]">
-                  {t('overlapText', { a: c.event_a.title, b: c.event_b.title, n: c.overlap_minutes })}
+                  {t('overlapText', { a: titleOf(c.event_a), b: titleOf(c.event_b), n: c.overlap_minutes })}
                 </div>
               ))}
             </div>

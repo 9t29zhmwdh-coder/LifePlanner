@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { api, CalEvent, Task, Project, DailySummary, TimeSlot, EventConflict } from '../lib/tauri'
-import { startOfDay, endOfDay, addDays, formatISO } from 'date-fns'
+import { addDays, formatISO, startOfWeek } from 'date-fns'
 
 interface PlannerStore {
   summary: DailySummary | null
@@ -42,19 +42,23 @@ export const usePlannerStore = create<PlannerStore>((set, get) => ({
     try {
       const [summary, tasks, projects, freeSlots] = await Promise.all([
         api.getDailySummary(),
-        api.getTasks(false),
+        // Done tasks too: "Show completed" and project progress need them.
+        api.getTasks(true),
         api.getProjects(),
         api.getFreeSlots(),
       ])
-      set({ summary, tasks, projects, freeSlots, events: summary.events, conflicts: summary.conflicts })
+      // `events` and `conflicts` belong to the calendar week; overwriting them with
+      // today's list emptied the calendar on every refresh.
+      set({ summary, tasks, projects, freeSlots })
     } catch {}
     set({ loading: false })
   },
 
   loadWeek: async (offset = 0) => {
-    const base = addDays(new Date(), offset * 7)
-    const from = formatISO(startOfDay(base))
-    const to = formatISO(endOfDay(addDays(base, 6)))
+    // Monday to Monday, matching the week the calendar draws.
+    const start = startOfWeek(addDays(new Date(), offset * 7), { weekStartsOn: 1 })
+    const from = formatISO(start)
+    const to = formatISO(addDays(start, 7))
     try {
       const [events, conflicts] = await Promise.all([
         api.getEvents(from, to),

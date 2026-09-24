@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { usePlannerStore } from '../../stores/plannerStore'
-import { api, formatTime, type CalEvent } from '../../lib/tauri'
+import { api, formatTime, titleOf, type CalEvent } from '../../lib/tauri'
 import { addDays, startOfWeek, format, isSameDay } from 'date-fns'
 import { de, enUS } from 'date-fns/locale'
 import { useT, getLang } from '../../lib/i18n'
@@ -17,8 +17,11 @@ export function CalendarView() {
   const weekStart = startOfWeek(addDays(new Date(), weekOffset * 7), { weekStartsOn: 1 })
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
 
-  const handlePrev = () => { setWeekOffset(w => w - 1); loadWeek(weekOffset - 1) }
-  const handleNext = () => { setWeekOffset(w => w + 1); loadWeek(weekOffset + 1) }
+  // The view used to show whatever the store held, which was only today's events.
+  useEffect(() => { loadWeek(weekOffset) }, [weekOffset, loadWeek])
+
+  const handlePrev = () => setWeekOffset(w => w - 1)
+  const handleNext = () => setWeekOffset(w => w + 1)
 
   const eventsForDay = (day: Date) =>
     events.filter(e => isSameDay(new Date(e.start), day))
@@ -34,7 +37,7 @@ export function CalendarView() {
           {format(weekStart, 'd. MMMM', { locale: dateLocale })} → {format(addDays(weekStart, 6), 'd. MMMM yyyy', { locale: dateLocale })}
         </span>
         <button onClick={handleNext} className="p-1 text-[#8b949e] hover:text-[#e6edf3]">▶</button>
-        <button onClick={() => { setWeekOffset(0); loadWeek(0) }}
+        <button onClick={() => setWeekOffset(0)}
           className="ml-2 text-xs text-[#58a6ff] hover:underline">{t('today')}</button>
       </div>
 
@@ -55,13 +58,14 @@ export function CalendarView() {
         {/* Time grid */}
         <div className="grid grid-cols-[60px_repeat(7,1fr)]">
           {HOURS.map(h => (
-            <>
+            <Fragment key={h}>
               <div key={`h${h}`} className="p-1 text-right pr-2 text-xs text-[#8b949e] border-r border-[#21262d] pt-3">
                 {h}:00
               </div>
               {days.map(day => {
+                // Events before 7:00 sit in the first row, after 20:00 in the last, instead of vanishing.
                 const dayEvs = eventsForDay(day).filter(e => {
-                  const evH = new Date(e.start).getHours()
+                  const evH = Math.min(Math.max(new Date(e.start).getHours(), HOURS[0]), HOURS[HOURS.length - 1])
                   return evH === h
                 })
                 return (
@@ -76,13 +80,13 @@ export function CalendarView() {
                           color: conflictIds.has(ev.id) ? '#f85149' : '#79c0ff',
                           border: `1px solid ${conflictIds.has(ev.id) ? '#f85149' : '#58a6ff'}40`,
                         }}>
-                        {formatTime(ev.start)} {ev.title}
+                        {formatTime(ev.start)} {titleOf(ev)}
                       </button>
                     ))}
                   </div>
                 )
               })}
-            </>
+            </Fragment>
           ))}
         </div>
       </div>
@@ -92,7 +96,7 @@ export function CalendarView() {
         <div className="border-t border-[#30363d] p-4 bg-[#161b22]">
           <div className="flex justify-between items-start">
             <div>
-              <div className="font-medium text-[#e6edf3]">{selected.title}</div>
+              <div className="font-medium text-[#e6edf3]">{titleOf(selected)}</div>
               <div className="text-xs text-[#8b949e] mt-1">
                 {format(new Date(selected.start), 'dd.MM.yyyy HH:mm')}
                 {selected.end && ` → ${formatTime(selected.end)}`}

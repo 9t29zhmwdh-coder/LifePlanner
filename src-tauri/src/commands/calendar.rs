@@ -1,44 +1,42 @@
 use crate::{error::{LpError, LpResult}, state::AppState};
 use lp_core::{
     calendar::{accounts::*, parse_ics_file, sync_caldav},
-    db::queries::insert_event,
-    models::CalendarAccount,
+    db::queries::replace_calendar_events,
+    models::{CalendarAccount, CalendarKind},
 };
+use chrono::Utc;
 use std::path::Path;
 use tauri::State;
 
+/// One sync button for both kinds: the account knows its file or server.
 #[tauri::command]
-pub async fn sync_ics_file(path: String, account_id: String, state: State<'_, AppState>) -> LpResult<usize> {
-    let events = parse_ics_file(Path::new(&path))
-        .map_err(|e| LpError::Calendar(e.to_string()))?;
-    let count = events.len();
-    for mut ev in events {
-        ev.calendar_id = Some(account_id.clone());
-        insert_event(&state.db, &ev).await?;
-    }
-    Ok(count)
-}
-
-#[tauri::command]
-pub async fn sync_caldav_account(account_id: String, state: State<'_, AppState>) -> LpResult<usize> {
-    let settings = state.settings.read().await;
-    let account = settings.calendar_accounts.iter()
+pub async fn sync_calendar(account_id: String, state: State<'_, AppState>) -> LpResult<usize> {
+    let account = state.settings.read().await.calendar_accounts.iter()
         .find(|a| a.id == account_id)
         .cloned()
         .ok_or_else(|| LpError::Other("Account not found".into()))?;
-    drop(settings);
 
-    let password = get_password(&account_id)
-        .map_err(|e| LpError::Calendar(e.to_string()))?
-        .unwrap_or_default();
+    let events = match account.kind {
+        CalendarKind::IcsFile => {
+            let path = account.ics_path.as_deref()
+                .ok_or_else(|| LpError::Calendar("No ICS file chosen".into()))?;
+            parse_ics_file(Path::new(path)).map_err(|e| LpError::Calendar(e.to_string()))?
+        }
+        CalendarKind::CalDav => {
+            let password = get_password(&account_id)
+                .map_err(|e| LpError::Calendar(e.to_string()))?
+                .unwrap_or_default();
+            sync_caldav(&account, &password).await.map_err(|e| LpError::Calendar(e.to_string()))?
+        }
+        CalendarKind::Local => return Ok(0),
+    };
 
-    let events = sync_caldav(&account, &password).await
-        .map_err(|e| LpError::Calendar(e.to_string()))?;
-
-    let count = events.len();
-    for ev in events {
-        insert_event(&state.db, &ev).await?;
+    let count = replace_calendar_events(&state.db, &account_id, events).await?;
+    let mut settings = state.settings.write().await;
+    if let Some(stored) = settings.calendar_accounts.iter_mut().find(|a| a.id == account_id) {
+        stored.last_synced = Some(Utc::now());
     }
+    lp_core::db::queries::save_settings(&state.db, &settings).await?;
     Ok(count)
 }
 

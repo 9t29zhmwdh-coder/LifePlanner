@@ -50,6 +50,56 @@ pub async fn get_events_in_range(
     Ok(rows.iter().filter_map(row_to_event).collect())
 }
 
+/// Brings one calendar's events in line with what its source delivered.
+///
+/// Events are matched by the calendar's own UID: a known one keeps its id and is
+/// updated, a new one is added, and one the calendar no longer has is removed.
+/// Before, every sync inserted everything again under fresh ids, so the second
+/// sync doubled the calendar and every event conflicted with its own copy.
+pub async fn replace_calendar_events(
+    db: &Database,
+    calendar_id: &str,
+    events: Vec<Event>,
+) -> super::DbResult<usize> {
+    let mut seen = Vec::with_capacity(events.len());
+    for mut event in events {
+        event.calendar_id = Some(calendar_id.to_string());
+        if let Some(uid) = event.external_uid.clone() {
+            if let Some(id) = event_id_for_uid(db, calendar_id, &uid).await? {
+                event.id = id;
+            }
+            seen.push(uid);
+        }
+        insert_event(db, &event).await?;
+    }
+    remove_missing_calendar_events(db, calendar_id, &seen).await?;
+    Ok(seen.len())
+}
+
+async fn event_id_for_uid(db: &Database, calendar_id: &str, uid: &str) -> super::DbResult<Option<String>> {
+    let row = sqlx::query("SELECT id FROM events WHERE calendar_id = ? AND external_uid = ? LIMIT 1")
+        .bind(calendar_id)
+        .bind(uid)
+        .fetch_optional(&db.pool)
+        .await?;
+    Ok(row.and_then(|r| r.try_get::<String, _>("id").ok()))
+}
+
+async fn remove_missing_calendar_events(db: &Database, calendar_id: &str, keep: &[String]) -> super::DbResult<()> {
+    let rows = sqlx::query("SELECT id, external_uid FROM events WHERE calendar_id = ? AND external_uid IS NOT NULL")
+        .bind(calendar_id)
+        .fetch_all(&db.pool)
+        .await?;
+    for row in rows {
+        let uid: String = row.try_get("external_uid").unwrap_or_default();
+        if !keep.contains(&uid) {
+            let id: String = row.try_get("id").unwrap_or_default();
+            delete_event(db, &id).await?;
+        }
+    }
+    Ok(())
+}
+
 pub async fn get_all_events(db: &Database) -> super::DbResult<Vec<Event>> {
     let rows = sqlx::query("SELECT * FROM events ORDER BY start ASC")
         .fetch_all(&db.pool)

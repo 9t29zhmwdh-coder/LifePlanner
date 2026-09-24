@@ -109,14 +109,14 @@ export function SearchView() {
                   <div key={task.id} className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 mb-2 hover:border-[#58a6ff] transition-colors">
                     <div className="text-sm text-[#e6edf3] font-medium">{highlight(task.title, query)}</div>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-[9px] text-[#8b949e]">{priorityLabel(task.priority as TaskPriority)}</span>
-                      <span className="text-[9px] text-[#8b949e]">{energyLabel(task.energy_level as EnergyLevel)}</span>
+                      <span className="text-xs text-[#8b949e]">{priorityLabel(task.priority as TaskPriority)}</span>
+                      <span className="text-xs text-[#8b949e]">{energyLabel(task.energy_level as EnergyLevel)}</span>
                       {task.due_date && (
-                        <span className={`text-[9px] ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
+                        <span className={`text-xs ${new Date(task.due_date) < new Date() ? 'text-[#f85149]' : 'text-[#8b949e]'}`}>
                           {t('due')}: {formatDate(task.due_date)}
                         </span>
                       )}
-                      <span className="text-[9px] text-[#8b949e]">{task.status}</span>
+                      <span className="text-xs text-[#8b949e]">{task.status}</span>
                     </div>
                     {task.description && (
                       <div className="text-xs text-[#8b949e] mt-1 truncate">{task.description}</div>

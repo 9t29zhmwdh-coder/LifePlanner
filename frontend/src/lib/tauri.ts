@@ -52,10 +52,13 @@ export interface AppSettings {
   default_event_duration_minutes: number
   work_start_hour: number; work_end_hour: number
   min_free_slot_minutes: number
-  enable_notifications: boolean; locale: string
   default_calendar_id?: string
   calendar_accounts: CalendarAccount[]
 }
+
+export interface ExtractionResult { events: CalEvent[]; tasks: Task[]; source_text: string }
+export interface PreviewConflict { event_id: string; existing_title: string; existing_start: string }
+export interface ExtractionPreview { result: ExtractionResult; conflicts: PreviewConflict[] }
 
 export interface TimeSlot { start: string; end: string; duration_minutes: number }
 export interface EventConflict { event_a: CalEvent; event_b: CalEvent; overlap_minutes: number }
@@ -67,7 +70,6 @@ export interface DailySummary {
   free_slots: TimeSlot[]; priority_tasks: Task[]; score: number
 }
 
-export interface ExtractionResult { events: CalEvent[]; tasks: Task[]; source_text: string }
 export interface SearchResults { events: CalEvent[]; tasks: Task[] }
 
 // ─── API ────────────────────────────────────────────────────────────────────
@@ -94,15 +96,17 @@ export const api = {
   deleteProject:   (id: string)                => invoke<void>('delete_project_cmd', { id }),
 
   // Calendar
-  syncIcsFile:     (path: string, accountId: string) => invoke<number>('sync_ics_file', { path, accountId }),
-  syncCalDav:      (accountId: string)         => invoke<number>('sync_caldav_account', { accountId }),
+  syncCalendar:    (accountId: string)         => invoke<number>('sync_calendar', { accountId }),
   addAccount:      (account: CalendarAccount, password?: string) =>
     invoke<void>('add_calendar_account', { account, password }),
   removeAccount:   (accountId: string)         => invoke<void>('remove_calendar_account', { accountId }),
 
   // Extract
-  extractText:     (text: string)              => invoke<ExtractionResult>('extract_text', { text }),
-  extractEmail:    (emailText: string)         => invoke<ExtractionResult>('extract_email', { emailText }),
+  extractText:     (text: string)              => invoke<ExtractionPreview>('extract_text', { text }),
+  extractEmail:    (emailText: string)         => invoke<ExtractionPreview>('extract_email', { emailText }),
+  // Raw bytes as the IPC body; a JSON array would be several times the file size.
+  extractPdf:      (bytes: ArrayBuffer)        => invoke<ExtractionPreview>('extract_pdf', bytes),
+  saveExtraction:  (result: ExtractionResult)  => invoke<number>('save_extraction', { result }),
 
   // Analysis
   getDailySummary: ()                          => invoke<DailySummary>('get_daily_summary'),
@@ -116,7 +120,7 @@ export const api = {
   generateSummary: ()                          => invoke<string>('generate_daily_summary_ai'),
   classifyTask:    (title: string, description: string) =>
     invoke<any>('ai_classify_task', { title, description }),
-  aiExtract:       (text: string)              => invoke<any>('ai_extract_from_text', { text }),
+  aiExtract:       (text: string)              => invoke<ExtractionPreview>('ai_extract_from_text', { text }),
 
   // Settings
   getSettings:     ()                          => invoke<AppSettings>('get_settings'),
@@ -143,17 +147,29 @@ export function statusLabel(s: TaskStatus): string {
     cancelled: t('statusCancelled') }[s]
 }
 
+/** Extraction and calendars may leave the title empty; show it in the app language. */
+export function titleOf(item: { title: string }): string {
+  return item.title.trim() || t('untitled')
+}
+
+/** Backend errors arrive as { kind, message }; PDF errors carry a translation key. */
+export function errorText(error: unknown): string {
+  const message = typeof error === 'object' && error && 'message' in error
+    ? String((error as { message: unknown }).message) : String(error)
+  return message.startsWith('pdf') ? t(message as never) : message
+}
+
 function locale(): string {
   return getLang() === 'de' ? 'de-CH' : 'en-US'
+}
+export function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleString(locale(), { dateStyle: 'medium', timeStyle: 'short' })
 }
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(locale(), { weekday: 'short', day: '2-digit', month: '2-digit' })
 }
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })
-}
-export function formatDateTime(iso: string): string {
-  return `${formatDate(iso)}, ${formatTime(iso)}`
+  return new Date(iso).toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })
 }
 export function dayOfWeekLabel(n: number): string {
   return [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')][n] ?? '?'

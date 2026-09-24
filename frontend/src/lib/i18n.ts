@@ -4,7 +4,11 @@ export type Lang = 'en' | 'de'
 
 const STORAGE_KEY = 'lifeplanner_lang'
 
-let currentLang: Lang = (localStorage.getItem(STORAGE_KEY) as Lang) || 'en'
+function systemLang(): Lang {
+  return navigator.language.toLowerCase().startsWith('de') ? 'de' : 'en'
+}
+
+let currentLang: Lang = (localStorage.getItem(STORAGE_KEY) as Lang) || systemLang()
 
 export function getLang(): Lang {
   return currentLang
@@ -62,6 +66,7 @@ const translations = {
     // Tasks
     filterAll: 'All', showDone: 'Show completed', addTask: '+ Task',
     newTaskPlaceholder: 'New task…', noTasks: 'No tasks',
+    clickToChange: 'Click to change', noProject: 'No project',
 
     // Projects
     projectsTitle: 'Projects ({{n}})', addProject: '+ Project',
@@ -78,7 +83,11 @@ const translations = {
     ollamaNotAvailable: 'Ollama not available', aiAnalyzing: 'AI analyzing…', aiDetection: '✨ AI Detection',
     clear: 'Clear', noItemsDetected: 'No appointments or tasks detected.',
     detectedEvents: 'Detected appointments ({{n}})', detectedTasks: 'Detected tasks ({{n}})',
-    saveAll: 'Save & apply all', saved: '✓ Saved', goToToday: 'Go to Today tab →',
+    saveSelected: 'Save {{n}} selected', savedCount: '✓ {{n}} saved', goToToday: 'Go to Today tab →',
+    openFile: '📄 Open file', readingFile: 'Reading file…', dropHint: 'or drop a PDF, .eml or .txt here',
+    collidesWith: 'Overlaps "{{title}}" ({{time}})', untitled: 'Untitled',
+    pdfTooLarge: 'The PDF is larger than 25 MB.', pdfUnreadable: 'The PDF could not be read.',
+    pdfNoText: 'The PDF contains no text, only images. Scanned documents are not supported.',
 
     // Search
     searchPlaceholder: 'Search appointments, tasks and projects…',
@@ -94,8 +103,9 @@ const translations = {
     connected: '✓ Connected', notReachable: '✗ Not reachable',
     workingHoursSection: 'Working Hours', workStart: 'Work start (hour)', workEnd: 'Work end (hour)',
     minFreeSlot: 'Minimum free slot length (min)', defaultEventDuration: 'Default appointment length (min)',
-    behaviorSection: 'Behavior', autoExtract: 'Automatically extract from clipboard',
-    enableNotifications: 'Enable notifications', languageLocale: 'Date/time locale',
+    behaviorSection: 'Behavior', autoExtract: 'Detect appointments as soon as text is pasted',
+    password: 'Password (stored in the system keychain)', chooseFile: 'Choose…', noFileChosen: 'No file chosen',
+    syncNow: 'Sync', syncedCount: '{{n}} appointments synced', lastSynced: 'last synced {{time}}', calLocal: 'Local',
     calendarAccountsSection: 'Calendar Accounts', addCalendar: '+ Add calendar',
     name: 'Name', type: 'Type', filePath: 'File path', url: 'URL', username: 'Username', color: 'Color',
     saving: 'Saving…', saveSettings: 'Save settings', calendarNamePlaceholder: 'My calendar',
@@ -127,6 +137,7 @@ const translations = {
 
     filterAll: 'Alle', showDone: 'Erledigte anzeigen', addTask: '+ Aufgabe',
     newTaskPlaceholder: 'Neue Aufgabe…', noTasks: 'Keine Aufgaben',
+    clickToChange: 'Zum Ändern klicken', noProject: 'Kein Projekt',
 
     projectsTitle: 'Projekte ({{n}})', addProject: '+ Projekt',
     projectNamePlaceholder: 'Projektname…', descriptionOptionalPlaceholder: 'Beschreibung (optional)…',
@@ -141,7 +152,11 @@ const translations = {
     ollamaNotAvailable: 'Ollama nicht verfügbar', aiAnalyzing: 'KI analysiert…', aiDetection: '✨ KI-Erkennung',
     clear: 'Leeren', noItemsDetected: 'Keine Termine oder Aufgaben erkannt.',
     detectedEvents: 'Erkannte Termine ({{n}})', detectedTasks: 'Erkannte Aufgaben ({{n}})',
-    saveAll: 'Alle speichern & übernehmen', saved: '✓ Gespeichert', goToToday: 'Zum Heute-Tab →',
+    saveSelected: '{{n}} ausgewählte speichern', savedCount: '✓ {{n}} gespeichert', goToToday: 'Zum Heute-Tab →',
+    openFile: '📄 Datei öffnen', readingFile: 'Lese Datei…', dropHint: 'oder PDF, .eml oder .txt hierher ziehen',
+    collidesWith: 'Überschneidet sich mit «{{title}}» ({{time}})', untitled: 'Ohne Titel',
+    pdfTooLarge: 'Das PDF ist grösser als 25 MB.', pdfUnreadable: 'Das PDF konnte nicht gelesen werden.',
+    pdfNoText: 'Das PDF enthält keinen Text, nur Bilder. Gescannte Dokumente werden nicht unterstützt.',
 
     searchPlaceholder: 'Termine, Aufgaben und Projekte durchsuchen…',
     enterSearchTerm: 'Suchbegriff eingeben…',
@@ -155,8 +170,9 @@ const translations = {
     connected: '✓ Verbunden', notReachable: '✗ Nicht erreichbar',
     workingHoursSection: 'Arbeitszeiten', workStart: 'Arbeitsbeginn (Stunde)', workEnd: 'Arbeitsende (Stunde)',
     minFreeSlot: 'Mindestlänge freies Zeitfenster (Min)', defaultEventDuration: 'Standard-Terminlänge (Min)',
-    behaviorSection: 'Verhalten', autoExtract: 'Automatisch aus Zwischenablage extrahieren',
-    enableNotifications: 'Benachrichtigungen aktivieren', languageLocale: 'Datum-/Zeit-Locale',
+    behaviorSection: 'Verhalten', autoExtract: 'Termine sofort beim Einfügen erkennen',
+    password: 'Passwort (im Schlüsselbund des Systems gespeichert)', chooseFile: 'Auswählen…', noFileChosen: 'Keine Datei gewählt',
+    syncNow: 'Abgleichen', syncedCount: '{{n}} Termine abgeglichen', lastSynced: 'zuletzt abgeglichen {{time}}', calLocal: 'Lokal',
     calendarAccountsSection: 'Kalenderkonten', addCalendar: '+ Kalender hinzufügen',
     name: 'Name', type: 'Typ', filePath: 'Dateipfad', url: 'URL', username: 'Benutzername', color: 'Farbe',
     saving: 'Speichern…', saveSettings: 'Einstellungen speichern', calendarNamePlaceholder: 'Mein Kalender',

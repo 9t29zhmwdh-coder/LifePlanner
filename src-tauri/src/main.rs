@@ -39,6 +39,7 @@ async fn main() {
     let state = AppState::new(db).await;
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .manage(state)
         .invoke_handler(tauri::generate_handler![
             // events
@@ -48,9 +49,9 @@ async fn main() {
             // projects
             get_projects_cmd, create_project, update_project, delete_project_cmd,
             // calendar
-            sync_ics_file, sync_caldav_account, add_calendar_account, remove_calendar_account,
+            sync_calendar, add_calendar_account, remove_calendar_account,
             // extract
-            extract_text, extract_email,
+            extract_text, extract_email, extract_pdf, save_extraction,
             // analysis
             get_daily_summary, get_conflicts, get_free_slots, get_patterns, search,
             // ai
