@@ -5,6 +5,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.1] - 2026-09-27
+
+### Changed
+
+Dependency and CI updates merged since v1.3.0, each with green checks:
+
+- chore(ci): bump the actions group across 1 directory with 5 updates (#83)
+- chore(deps): bump the cargo group across 1 directory with 4 updates (#85)
+- chore(deps): bump zustand from 4.5.7 to 5.0.14 in /frontend (#74)
+- chore(deps): bump the npm group across 1 directory with 7 updates (#82)
+
+---
+
 ## [1.3.0] - 2026-09-24
 
 The README promised things the app did not do. This release makes them true or takes them out.
