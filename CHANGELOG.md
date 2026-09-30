@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.4] - 2026-09-30
+
+### Changed
+
+Dependency and CI updates merged since v1.3.3, each with green checks:
+
+- chore(deps): bump dirs from 6.0.0 to 7.0.0 (#88)
+
+---
+
 ## [1.3.3] - 2026-09-30
 
 ### Changed
